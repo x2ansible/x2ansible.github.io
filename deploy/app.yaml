@@ -18,6 +18,9 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["create", "get", "delete", "put"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create", "get", "delete", "put"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
