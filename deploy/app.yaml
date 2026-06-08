@@ -184,6 +184,7 @@ data:
         red-hat-developer-hub.backstage-plugin-x2a:
           scaffolderFieldExtensions:
             - importName: RepoAuthenticationExtension
+            - importName: RulesAcceptanceExtension
           appIcons:
             - name: x2aIcon
               importName: X2AIcon
