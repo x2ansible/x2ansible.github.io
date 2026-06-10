@@ -18,6 +18,9 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["create", "get", "delete", "put"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create", "get", "delete", "put"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -184,6 +187,7 @@ data:
         red-hat-developer-hub.backstage-plugin-x2a:
           scaffolderFieldExtensions:
             - importName: RepoAuthenticationExtension
+            - importName: RulesAcceptanceExtension
           appIcons:
             - name: x2aIcon
               importName: X2AIcon
