@@ -83,6 +83,7 @@ Auto-generated from `src/config/settings.py`.
 |----------|------|---------|-------------|
 | `DEBUG_ALL` | boolean | `false` | Enable debug logging for all libraries |
 | `LOG_LEVEL` | enum: 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL' | `INFO` | Log level for x2convertor namespace |
+| `JSON_LINES` | pathlib._local.Path | - | Path to directory for dumping agent messages in JSON Lines format |
 
 ## Molecule Testing Configuration
 
