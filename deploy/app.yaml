@@ -87,6 +87,10 @@ data:
       - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-backend:bs_1.49.4__1.4.0"
       - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:bs_1.49.4__0.2.0"
       - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-x2a:bs_1.49.4__0.3.1"
+      
+      # Enable backstage-plugin-scaffolder-backend-module-github-dynamic plugin which is disabled by default for better github integration
+      - package: './dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic'
+        disabled: false
 
       # In addition, the backstage-plugin-auth-backend 0.25.6 or later is required, should be met since RHDH 1.9. Keeping this note here for a reference in case of issues.
 
