@@ -1,19 +1,19 @@
 ---
 layout: default
 title: MCP tools
-parent: UI Documentation
+parent: X2Ansible Platform
 nav_order: 7
 ---
 
 # MCP tools
 
 Red Hat Developer Hub exposes a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server.
-With the default [`deploy/app.yaml`]({% link ui/installation.md %}#2-application-deployment), X2A registers MCP tools so assistants (for example Cursor, Continue, or other tool-aware clients) can work with migration projects through the same RHDH X2A instance you use in the browser.
+With the default [`deploy/app.yaml`]({% link platform/installation.md %}#2-application-deployment), X2A registers MCP tools so assistants (for example Cursor, Continue, or other tool-aware clients) can work with migration projects through the same RHDH X2A instance you use in the browser.
 
 Confirm your assistant supports **tool calling** before relying on MCP workflows.
 For RHDH transport details and vendor-specific client snippets, see [Interacting with Model Context Protocol tools for Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_model_context_protocol_tools_for_red_hat_developer_hub/index).
 
-Get your RHDH base URL from the cluster after [Installation]({% link ui/installation.md %}#access-the-application).
+Get your RHDH base URL from the cluster after [Installation]({% link platform/installation.md %}#access-the-application).
 That host must stay consistent with how users sign in and how MCP clients complete browser steps.
 
 ## Connect your MCP client
@@ -25,7 +25,7 @@ Use your RHDH host in place of `<my_developer_hub_domain>`.
 | Streamable (recommended where supported) | `https://<my_developer_hub_domain>/api/mcp-actions/v1` |
 | SSE (legacy, for clients without streamable support) | `https://<my_developer_hub_domain>/api/mcp-actions/v1/sse` |
 
-Red Hat’s guide includes ready-made examples for Cursor, Continue, and other clients (headers, `Authorization: Bearer` where applicable).
+Red Hat's guide includes ready-made examples for Cursor, Continue, and other clients (headers, `Authorization: Bearer` where applicable).
 See [Configuring MCP clients to access the RHDH server](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_model_context_protocol_tools_for_red_hat_developer_hub/index#proc-configuring-mcp-clients-to-access-the-rhdh-server).
 
 ## Test with the MCP Inspector
@@ -51,7 +51,7 @@ The [MCP Inspector](https://github.com/modelcontextprotocol/inspector) is useful
 
 The sample `app-config-rhdh` in this repository already allows `http://localhost:6274` under `backend.cors` for that workflow.
 If you use another browser origin, add it there.
-If a browser-based client fails with CORS errors against your public route, include your RHDH deployment’s `https://<my_developer_hub_domain>` origin in the same `backend.cors.origin` list (see [Advanced configuration](#advanced-configuration)).
+If a browser-based client fails with CORS errors against your public route, include your RHDH deployment's `https://<my_developer_hub_domain>` origin in the same `backend.cors.origin` list (see [Advanced configuration](#advanced-configuration)).
 
 ## Authentication
 
@@ -86,7 +86,7 @@ Upgrade that plugin per your release notes or use a [static token](#static-acces
 {: #static-access-token-for-automation}
 
 Some deployments add **`backend.auth.externalAccess`** with a long-lived **Bearer** token mapped to a Backstage **`subject`** (for example `mcp-clients`).
-That subject must be granted the same [Authorization]({% link ui/authorization.md %}) roles as a human user for the actions you want.
+That subject must be granted the same [Authorization]({% link platform/authorization.md %}) roles as a human user for the actions you want.
 If the subject has no `x2a` permissions, X2A tools will deny access.
 
 Use static tokens when a non-interactive principal should call tools without a browser.
@@ -103,21 +103,21 @@ These tools mirror capabilities you already have in the Conversion Hub UI. Names
 | `x2a-trigger-next-phase` | Start or advance a pipeline phase (for example init, analyze, migrate, publish) for a module or project | Identifiers for the project or module and the phase to run | Job or status information; errors if prerequisites are missing |
 | `x2a-list-modules` | List modules belonging to a project | `projectId` | Module names, paths, status, and deep links to module detail in the RHDH UI |
 
-**Repository access:** Creating projects or advancing phases often requires the same **Git provider access** as the web UI (OAuth tokens for source and target repositories). If the assistant runs as a static service principal, it may not be able to complete steps that need your personal SCM authorization. See [Authentication]({% link ui/authentication.md %}) for how users sign in to GitHub, GitLab, or Bitbucket in RHDH.
+**Repository access:** Creating projects or advancing phases often requires the same **Git provider access** as the web UI (OAuth tokens for source and target repositories). If the assistant runs as a static service principal, it may not be able to complete steps that need your personal SCM authorization. See [Authentication]({% link platform/authentication.md %}) for how users sign in to GitHub, GitLab, or Bitbucket in RHDH.
 
-**Tool descriptions:** The plugin can expose short descriptions and structured schemas so clients know how to call each tool. Your client’s tool list is the authoritative view for the exact parameter names on your deployment.
+**Tool descriptions:** The plugin can expose short descriptions and structured schemas so clients know how to call each tool. Your client's tool list is the authoritative view for the exact parameter names on your deployment.
 
 ## Permissions
 
 X2A MCP tools enforce the same RBAC rules as the REST API and UI.
 Read-heavy tools (such as listing projects or modules) require permission to view those resources.
 Write or job-starting tools require `update` or `use` access.
-See [Authorization]({% link ui/authorization.md %}) for `x2a.admin` and `x2a.user` and how to assign them to users, groups, or an MCP service subject.
+See [Authorization]({% link platform/authorization.md %}) for `x2a.admin` and `x2a.user` and how to assign them to users, groups, or an MCP service subject.
 
 ## Advanced configuration
 {: #advanced-configuration}
 
-The following fragments belong in the **single** `app-config-rhdh.yaml` document carried by the `app-config-rhdh` ConfigMap (see [Installation]({% link ui/installation.md %})). Keep **one** top-level `backend:` map and merge new keys into it instead of duplicating the key.
+The following fragments belong in the **single** `app-config-rhdh.yaml` document carried by the `app-config-rhdh` ConfigMap (see [Installation]({% link platform/installation.md %})). Keep **one** top-level `backend:` map and merge new keys into it instead of duplicating the key.
 
 ### CORS
 
@@ -182,6 +182,6 @@ Browse [rhdh-plugin-export-overlays packages](https://github.com/orgs/redhat-dev
 
 ## Further reading
 
-- [Installation]({% link ui/installation.md %}): deploy manifests, secrets, and restarting the RHDH pod
+- [Installation]({% link platform/installation.md %}): deploy manifests, secrets, and restarting the RHDH pod
 - [Interacting with Model Context Protocol tools for Red Hat Developer Hub](https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.9/html-single/interacting_with_model_context_protocol_tools_for_red_hat_developer_hub/index): RHDH MCP behavior and client examples
 - Optional background on plugin sources: [rhdh-plugins workspaces/x2a](https://github.com/redhat-developer/rhdh-plugins/tree/main/workspaces/x2a)

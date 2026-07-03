@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Installation
-parent: UI Documentation
+parent: X2Ansible Platform
 nav_order: 1
 ---
 
@@ -146,9 +146,9 @@ To use different plugin versions, update the OCI image references in the `dynami
 
 ## MCP tools
 
-The default [`deploy/app.yaml`]({% link ui/installation.md %}#2-application-deployment) wires up Model Context Protocol (MCP) so assistants can call X2A MCP tools against your RHDH X2A route.
+The default [`deploy/app.yaml`]({% link platform/installation.md %}#2-application-deployment) wires up Model Context Protocol (MCP) so assistants can call X2A MCP tools against your RHDH X2A route.
 
-Use [MCP tools]({% link ui/mcp-server.md %}) for the tool list and permissions description.
+Use [MCP tools]({% link platform/mcp-server.md %}) for the tool list and permissions description.
 
 ### Optional tweaks in `app-config`
 
@@ -157,7 +157,7 @@ Most teams can leave the bundled `app-config-rhdh` fragment as-is. Edit it when 
 - **`auth.experimentalDynamicClientRegistration`** - tighten `allowedRedirectUriPatterns` in production (the sample uses broad patterns suitable for labs).
 - **`backend.cors`** - add or remove origins if you use browser-based MCP clients or the Inspector from a host that is not already listed.
 
-YAML examples and behavior notes for those keys live on the [MCP tools]({% link ui/mcp-server.md %}#advanced-configuration) page.
+YAML examples and behavior notes for those keys live on the [MCP tools]({% link platform/mcp-server.md %}#advanced-configuration) page.
 
 After any change to `deploy/app.yaml`, re-apply and restart the RHDH pod so configuration and dynamic plugins reload:
 

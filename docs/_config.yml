@@ -1,6 +1,6 @@
-# X2A Convertor Documentation
-title: X2A Convertor
-description: AI-powered infrastructure migration from Chef/Puppet/Salt to Ansible
+# X2Ansible Documentation
+title: X2Ansible
+description: Infrastructure migration platform for converting Chef, Puppet, and PowerShell to Ansible
 baseurl: ""
 url: "https://x2ansible.github.io"
 repository: x2ansible/x2ansible
@@ -25,7 +25,7 @@ search:
 
 # Mermaid diagrams support
 mermaid:
-  version: "10.6.1"
+  version: "11.4.1"
 
 # Navigation
 nav_sort: title
@@ -37,7 +37,7 @@ aux_links:
     - "//github.com/x2ansible/x2ansible"
 
 # Footer
-footer_content: "X2A Convertor - Enterprise Infrastructure Migration Tool"
+footer_content: "X2Ansible - Infrastructure Migration Platform"
 
 # Syntax highlighting
 kramdown:
@@ -73,9 +73,6 @@ callouts:
 # Collections
 collections:
   concepts:
-    permalink: "/:collection/:path/"
-    output: true
-  getting-started:
     permalink: "/:collection/:path/"
     output: true
 

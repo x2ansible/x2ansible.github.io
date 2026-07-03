@@ -1,13 +1,11 @@
 ---
 layout: default
-title: Ansible Agent
-parent: Input Agents
-nav_order: 3
+title: Ansible Modernization
+parent: X2A Convertor Reference
+nav_order: 6
 ---
 
 # Ansible Agent
-
-**Location**: `src/inputs/ansible/`
 
 The Ansible Agent modernizes legacy Ansible roles to follow current best practices. Unlike the Chef Agent which converts between languages, the Ansible Agent performs in-place modernization.
 
@@ -108,17 +106,17 @@ The Ansible Agent checks for and documents modernization needs across these cate
 
 | # | Category | Example |
 |---|----------|---------|
-| 1 | FQCN | `copy` → `ansible.builtin.copy` |
-| 2 | Deprecated includes | `include:` → `include_tasks:` |
-| 3 | Loop modernization | `with_items:` → `loop:` |
-| 4 | Privilege escalation | `sudo: yes` → `become: true` |
+| 1 | FQCN | `copy` to `ansible.builtin.copy` |
+| 2 | Deprecated includes | `include:` to `include_tasks:` |
+| 3 | Loop modernization | `with_items:` to `loop:` |
+| 4 | Privilege escalation | `sudo: yes` to `become: true` |
 | 5 | Jinja2 bare variables | Wrap in `{% raw %}{{ }}{% endraw %}` |
-| 6 | Fact access | `ansible_hostname` → `ansible_facts['hostname']` |
-| 7 | Strict mode octals | `mode: 0644` → `mode: "0644"` |
+| 6 | Fact access | `ansible_hostname` to `ansible_facts['hostname']` |
+| 7 | Strict mode octals | `mode: 0644` to `mode: "0644"` |
 | 8 | Argument specs | Generate `meta/argument_specs.yml` |
-| 9 | Truthiness | `yes`/`no` → `true`/`false` |
-| 10 | Error handling | `ignore_errors` → `block`/`rescue`/`always` |
+| 9 | Truthiness | `yes`/`no` to `true`/`false` |
+| 10 | Error handling | `ignore_errors` to `block`/`rescue`/`always` |
 | 11 | Idempotency | Add `changed_when` to command/shell tasks |
 | 12 | Module defaults | Consolidate repeated `become: true` |
-| 13 | Handler name casing | `restart nginx` → `Restart nginx` (ansible-lint compliance) |
-| 14 | Template modernization | `.iteritems()` → `.items()`, TLS version upgrades |
+| 13 | Handler name casing | `restart nginx` to `Restart nginx` (ansible-lint compliance) |
+| 14 | Template modernization | `.iteritems()` to `.items()`, TLS version upgrades |
