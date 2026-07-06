@@ -1,13 +1,11 @@
 ---
 layout: default
-title: PowerShell Agent
-parent: Input Agents
-nav_order: 2
+title: PowerShell
+parent: X2A Convertor Reference
+nav_order: 5
 ---
 
 # PowerShell Agent
-
-**Location**: `src/inputs/powershell/`
 
 The PowerShell Agent analyzes PowerShell scripts, modules, and DSC (Desired State Configuration) configurations to create migration specifications for converting Windows automation to Ansible.
 

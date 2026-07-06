@@ -1,13 +1,11 @@
 ---
 layout: default
-title: Chef Agent
-parent: Input Agents
-nav_order: 1
+title: Chef
+parent: X2A Convertor Reference
+nav_order: 4
 ---
 
 # Chef Agent
-
-**Location**: `src/inputs/chef.py`
 
 The Chef Agent analyzes Chef cookbooks, recipes, templates, and attributes to create migration specifications for converting Chef infrastructure to Ansible.
 
@@ -126,7 +124,7 @@ Output (Specification excerpt):
 | Chef Resource | Ansible Module | Notes |
 |---------------|----------------|-------|
 | package 'nginx' | package: name=nginx state=present | Direct mapping |
-| template | template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf | ERB→Jinja2, extract variables |
+| template | template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf | ERB to Jinja2, extract variables |
 | service 'nginx' | service: name=nginx state=started enabled=yes | Direct mapping |
 
 ## Variables

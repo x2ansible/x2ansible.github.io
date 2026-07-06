@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Authentication
-parent: UI Documentation
+parent: X2Ansible Platform
 nav_order: 3
 ---
 
@@ -251,7 +251,7 @@ To grant a user access to X2Ansible:
 2. **Import users to the catalog**:
    - **Production**: Configure catalog provider plugin to auto-import from your Git organization
    - **Development**: Add user entity to `examples/org.yaml` (not recommended for production)
-3. **Assign permissions** via RBAC policies (see [Authorization]({% link ui/authorization.md %}))
+3. **Assign permissions** via RBAC policies (see [Authorization]({% link platform/authorization.md %}))
 
 ## Environment Variables
 

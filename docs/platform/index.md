@@ -1,11 +1,11 @@
 ---
 layout: default
-title: UI Documentation
+title: X2Ansible Platform
 has_children: true
 nav_order: 6
 ---
 
-# X2Ansible UI Documentation
+# X2Ansible Platform
 
 The X2Ansible Backstage Plugin provides a web-based user interface for managing migration projects, running conversion jobs, and integrating with Ansible Automation Platform.
 
@@ -20,25 +20,25 @@ The UI is built as a Backstage plugin workspace, providing:
 
 ## Documentation Sections
 
-### [Installation]({% link ui/installation.md %})
+### [Installation]({% link platform/installation.md %})
 Deployment guide for OpenShift and Kubernetes environments.
 
-### [Installation (vanilla Backstage)]({% link ui/installation-backstage.md %})
+### [Installation (vanilla Backstage)]({% link platform/installation-backstage.md %})
 Add published `@red-hat-developer-hub/*` X2A packages to a freshly generated `create-app` Backstage instance.
 
-### [Authentication]({% link ui/authentication.md %})
+### [Authentication]({% link platform/authentication.md %})
 OAuth setup, providers, and user management.
 
-### [Authorization]({% link ui/authorization.md %})
+### [Authorization]({% link platform/authorization.md %})
 RBAC permissions and access control policies.
 
-### [MCP tools]({% link ui/mcp-server.md %})
+### [MCP tools]({% link platform/mcp-server.md %})
 Connect assistants to Conversion Hub via RBAC-aware MCP tools.
 
-### [CSV Bulk Import]({% link ui/csv-bulk-import.md %})
+### [CSV Bulk Import]({% link platform/csv-bulk-import.md %})
 Create multiple conversion projects at once by uploading a CSV file.
 
-### [API Reference]({% link ui/api-reference.md %})
+### [API Reference]({% link platform/api-reference.md %})
 Swagger UI for exploring the OpenAPI specification.
 
 ## Quick Links
@@ -59,9 +59,14 @@ flowchart TB
     K8s --> Convertor[X2A Convertor Container]
     Convertor --> LLM[LLM Provider]
 
-    style UI fill:#e3f2fd
-    style Backend fill:#e8f5e9
+    style UI fill:#ffebee
+    style Backend fill:#ffebee
+    style K8s fill:#e3f2fd
+    style DB fill:#ffebee
+    style SCM fill:#f3e5f5
+    style AAP fill:#f3e5f5
     style Convertor fill:#fff3e0
+    style LLM fill:#fff3e0
 ```
 
 The UI communicates with the backend plugin via REST API. The backend orchestrates Kubernetes jobs that run the X2A convertor container, which uses LLM providers to perform the actual migration analysis and code generation.

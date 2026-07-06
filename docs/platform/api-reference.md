@@ -1,7 +1,7 @@
 ---
 layout: default
 title: API Reference
-parent: UI Documentation
+parent: X2Ansible Platform
 nav_order: 5
 ---
 

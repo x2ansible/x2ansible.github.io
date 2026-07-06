@@ -1,13 +1,13 @@
 ---
 layout: default
 title: Installation (vanilla Backstage)
-parent: UI Documentation
+parent: X2Ansible Platform
 nav_order: 2
 ---
 
 # Installation (vanilla Backstage)
 
-This guide adds the X2A plugins to a stock Backstage app created with the upstream wizard, not Red Hat Developer Hub on OpenShift. For RHDH deployment, use [Installation]({% link ui/installation.md %}) instead.
+This guide adds the X2A plugins to a stock Backstage app created with the upstream wizard, not Red Hat Developer Hub on OpenShift. For RHDH deployment, use [Installation]({% link platform/installation.md %}) instead.
 
 Reference implementation and deeper notes live in the Red Hat plugin workspace: [rhdh-plugins/workspaces/x2a](https://github.com/redhat-developer/rhdh-plugins/tree/main/workspaces/x2a) ([`packages/app`](https://github.com/redhat-developer/rhdh-plugins/tree/main/workspaces/x2a/packages/app), [`packages/backend`](https://github.com/redhat-developer/rhdh-plugins/tree/main/workspaces/x2a/packages/backend)).
 
@@ -55,7 +55,7 @@ yarn --cwd packages/backend add @backstage/plugin-mcp-actions-backend
 yarn --cwd packages/backend add @red-hat-developer-hub/backstage-plugin-x2a-mcp-extras
 ```
 
-For `mcpActions` and related `app-config` fragments, see [MCP tools - Advanced configuration]({% link ui/mcp-server.md %}#advanced-configuration).
+For `mcpActions` and related `app-config` fragments, see [MCP tools - Advanced configuration]({% link platform/mcp-server.md %}#advanced-configuration).
 Core X2A conversion flows do not require these packages.
 
 ## Register backend plugins
@@ -169,14 +169,14 @@ catalog:
         - allow: [Template]
 ```
 
-CSV-driven bulk flows and the `RepoAuthentication` extension are described in [CSV Bulk Import]({% link ui/csv-bulk-import.md %}).
+CSV-driven bulk flows and the `RepoAuthentication` extension are described in [CSV Bulk Import]({% link platform/csv-bulk-import.md %}).
 
 ## Configuration (pointers only)
 
 | Topic | Where it is documented |
 |--------|-------------------------|
-| OAuth providers, env vars, sign-in | [Authentication]({% link ui/authentication.md %}) |
-| RBAC / permissions for the `x2a` plugin | [Authorization]({% link ui/authorization.md %}) |
+| OAuth providers, env vars, sign-in | [Authentication]({% link platform/authentication.md %}) |
+| RBAC / permissions for the `x2a` plugin | [Authorization]({% link platform/authorization.md %}) |
 | `x2a:` Kubernetes image, job resources, LLM and AAP credentials | [X2A backend plugin README](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/plugins/x2a-backend/README.md) and [reference app-config.yaml](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/app-config.yaml) |
 | SCM host detection (GitHub Enterprise, self-hosted GitLab, etc.) | [Workspace README — SCM Provider Detection](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/README.md) (`integrations:` host entries; tokens there are not used for X2A repo auth; OAuth applies.) |
 
@@ -193,4 +193,4 @@ In the catalog, confirm the **conversion project** template appears (might take 
 
 ## API exploration
 
-Use [API Reference]({% link ui/api-reference.md %}) for the REST surface once the backend plugin is running.
+Use [API Reference]({% link platform/api-reference.md %}) for the REST surface once the backend plugin is running.

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: CSV Bulk Import
-parent: UI Documentation
+parent: X2Ansible Platform
 nav_order: 6
 ---
 
@@ -84,7 +84,7 @@ Query-parameter style, without `https://`:
 
 For Bitbucket, the `project` parameter is organizational metadata and is not part of the clone URL. Only `workspace` and `repo` are used.
 
-For self-hosted instances (e.g. GitHub Enterprise, self-hosted GitLab), use the corresponding host in place of the public domain. The host must be listed in the `integrations:` section of `app-config.yaml` so the plugin can detect the correct SCM provider. See [Authentication]({% link ui/authentication.md %}) for provider configuration details.
+For self-hosted instances (e.g. GitHub Enterprise, self-hosted GitLab), use the corresponding host in place of the public domain. The host must be listed in the `integrations:` section of `app-config.yaml` so the plugin can detect the correct SCM provider. See [Authentication]({% link platform/authentication.md %}) for provider configuration details.
 
 ## Repeatable Import
 
@@ -96,4 +96,3 @@ A typical workflow for a large import:
 2. Review the results. The summary shows how many succeeded, failed, and were skipped.
 3. Fix the issues -- correct the CSV rows that failed and, if a partially-created project needs to be recreated, delete it from the application first.
 4. Re-upload the corrected CSV. Already-created projects are skipped automatically. Only the new or corrected rows are processed.
-

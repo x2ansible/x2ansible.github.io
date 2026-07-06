@@ -1,7 +1,8 @@
 ---
 layout: default
 title: CLI Reference
-nav_order: 5
+parent: X2A Convertor Reference
+nav_order: 1
 ---
 
 # CLI Reference

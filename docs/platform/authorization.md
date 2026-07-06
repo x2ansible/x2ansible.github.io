@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Authorization
-parent: UI Documentation
+parent: X2Ansible Platform
 nav_order: 4
 ---
 
@@ -262,4 +262,3 @@ g, group:default/developers, role:default/x2aUser
 **Cause**: User has `x2a.admin` with `read` action but not `update`.
 
 **Solution**: Add `x2a.admin` with `update` action, or grant `x2a.user` if they own the project.
-
