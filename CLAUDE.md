@@ -17,7 +17,7 @@ The platform orchestrates Kubernetes jobs running the x2a-convertor engine. User
 
 ## Repository Structure
 
-This is a **documentation-only repository**. The actual convertor engine code lives in a separate repository (x2a-convertor).
+This repository (`x2ansible.github.io`) hosts the X2Ansible documentation site and deployment manifests. The actual convertor engine code lives in a separate repository ([x2a-convertor](https://github.com/x2ansible/x2a-convertor)).
 
 ```
 .
@@ -53,6 +53,17 @@ make check-links
 ```
 
 The site runs at `http://localhost:4000`.
+
+### Automated Documentation Sync
+
+The `.github/workflows/x2a-convertor-sync.yaml` workflow automatically syncs generated documentation from the [x2a-convertor](https://github.com/x2ansible/x2a-convertor) repository:
+
+1. Checks out both repositories
+2. Installs dependencies and runs `make generate-docs` in x2a-convertor
+3. Copies generated docs (CLI reference, configuration options, getting-started guides)
+4. Creates a PR with the changes to this repository
+
+The workflow is manually triggered via `workflow_dispatch`. When the PR is merged, the documentation site is automatically updated.
 
 ### Diagram Standards
 

@@ -42,9 +42,15 @@ jobs:
 
       - name: Copy generated docs
         run: |
-          mkdir -p docs
-          cp -rv x2a-convertor/docs/* docs/
-          ls docs/
+          mkdir -p docs/convertor-reference
+          # Copy CLI-generated docs to convertor-reference/
+          cp -v x2a-convertor/docs/cli-reference.md docs/convertor-reference/
+          cp -v x2a-convertor/docs/configuration_options.md docs/convertor-reference/
+          cp -rv x2a-convertor/docs/getting-started docs/
+          # List what was copied
+          echo "=== Copied files ==="
+          ls -la docs/convertor-reference/
+          ls -la docs/getting-started/
 
       - name: Check for changes
         id: changes
