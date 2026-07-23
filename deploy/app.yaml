@@ -147,7 +147,7 @@ data:
       environment: development
       providers:
         # See https://backstage.io/docs/auth/guest/provider
-        # guest: {}
+        guest: {}
 
         # CUSTOMIZE:
         github:
@@ -179,6 +179,7 @@ data:
         #           dangerouslyAllowSignInWithoutUserInCatalog: true
     signInPage:
       - github
+      - guest
       # - gitlab
       # - bitbucket
     dynamicPlugins:
