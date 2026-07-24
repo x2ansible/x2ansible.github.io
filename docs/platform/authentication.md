@@ -87,7 +87,7 @@ auth:
 ```
 
 **Setup**:
-1. Create a Bitbucket OAuth consumer at `https://bitbucket.org/[YOUR_WORKSPACE]/workspace/settings/api`
+1. Create a [Bitbucket OAuth consumer](https://support.atlassian.com/bitbucket-cloud/docs/use-oauth-on-bitbucket-cloud/) at `https://bitbucket.org/<workspace>/workspace/settings/oauth-clients`
 2. Set the callback URL to `http://localhost:7007/api/auth/bitbucket`
 3. Request the following scopes:
    - `account:read`
