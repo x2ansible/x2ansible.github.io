@@ -1,8 +1,7 @@
 ---
 layout: default
 title: CLI Reference
-parent: X2A Convertor Reference
-nav_order: 1
+nav_order: 5
 ---
 
 # CLI Reference
@@ -35,6 +34,7 @@ Options:
   --help  Show this message and exit.
 
 Commands:
+  adversarial-run  Run adversarial validation agents for a workflow phase.
   analyze          Perform detailed analysis and create module migration...
   init             Initialize project with interactive message
   migrate          Migrate project based on migration plan from analysis
@@ -42,6 +42,49 @@ Commands:
   publish-project  Create or append to an Ansible project for a migrated...
   report           Report execution artifacts to the x2a API
   validate         Validate migrated module against original configuration
+```
+
+## adversarial-run
+
+Run adversarial validation agents for a workflow phase.
+
+### Usage
+
+```bash
+uv run app.py adversarial-run [OPTIONS]
+```
+
+### Options
+
+- `--phase` **[required]** (default: Sentinel.UNSET)
+  Workflow phase to run adversarial agents for
+
+- `--source-dir` (default: .)
+  Source directory containing migration artifacts to review
+
+- `--report-path`
+  Path to a report file where findings will be appended
+
+- `--config` **[required]** (default: Sentinel.UNSET)
+  Path to adversarial agents JSON config
+
+### Full Help
+
+```
+Usage: adversarial-run [OPTIONS]
+
+  Run adversarial validation agents for a workflow phase.
+
+Options:
+  --phase [analyze|migrate]  Workflow phase to run adversarial agents for
+                             [required]
+  --source-dir DIRECTORY     Source directory containing migration artifacts
+                             to review
+  --report-path PATH         Path to a report file where findings will be
+                             appended
+  --config TEXT              Path to adversarial agents JSON config
+                             [required]
+  --help                     Show this message and exit.
 ```
 
 ## analyze
