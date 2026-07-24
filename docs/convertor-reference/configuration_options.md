@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Configuration Options
-nav_order: 4
+parent: X2A Convertor Reference
+nav_order: 0
 ---
 
 # Environment Variables
