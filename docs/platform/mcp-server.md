@@ -57,7 +57,7 @@ If a browser-based client fails with CORS errors against your public route, incl
 
 ### Delegated access (default)
 
-The default manifest enables **OAuth2 Dynamic Client Registration (DCR)** under `auth.experimentalDynamicClientRegistration` and installs the X2A DCR frontend so consent can be served under `/oauth2/*`.
+The default manifest enables **OAuth2 Dynamic Client Registration (DCR)** under `auth.experimentalDynamicClientRegistration` and installs the upstream `@backstage/plugin-auth` frontend so consent can be served under `/oauth2/*`.
 In typical use, the MCP client starts registration, the user signs in or approves access in the browser and subsequent tool calls run **on behalf of that user** with their RHDH identity and RBAC.
 
 High-level sequence:

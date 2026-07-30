@@ -44,16 +44,39 @@ Published packages (verify versions before pinning in production):
 
 ### Optional components
 
-Only if you need OAuth Dynamic Client Registration UI and/or MCP tool wiring similar to production RHDH overlays:
+Core X2A conversion flows do not require the packages below. Add them only when you need DCR consent UI and/or MCP tool wiring similar to the production RHDH overlays in [`deploy/app.yaml`](https://github.com/x2ansible/x2ansible.github.io/blob/main/deploy/app.yaml).
+
+#### OAuth Dynamic Client Registration (DCR)
+
+Since RHDH 1.10, the `/oauth2/*` consent page comes from upstream [`@backstage/plugin-auth`](https://www.npmjs.com/package/@backstage/plugin-auth) (replacing the RHDH 1.9-only `x2a-dcr` workaround):
 
 ```bash
-yarn --cwd packages/app add @red-hat-developer-hub/backstage-plugin-x2a-dcr
+yarn --cwd packages/app add @backstage/plugin-auth
+```
+
+Add the plugin to the NFS `features` array in `App.tsx` (see [Register the frontend plugin](#register-the-frontend-plugin)):
+
+```tsx
+import authPlugin from '@backstage/plugin-auth';
+
+export default createApp({
+  features: [
+    // ...catalogPlugin, scaffolderPlugin, x2aPlugin, etc.
+    authPlugin,
+  ],
+});
+```
+
+Enable DCR under `auth.experimentalDynamicClientRegistration` in `app-config.yaml`. For a full example, see [`deploy/app.yaml`](https://github.com/x2ansible/x2ansible.github.io/blob/main/deploy/app.yaml).
+
+#### MCP tools
+
+```bash
 yarn --cwd packages/backend add @backstage/plugin-mcp-actions-backend
 yarn --cwd packages/backend add @red-hat-developer-hub/backstage-plugin-x2a-mcp-extras
 ```
 
 For `mcpActions` and related `app-config` fragments, see [MCP tools - Advanced configuration]({% link platform/mcp-server.md %}#advanced-configuration).
-Core X2A conversion flows do not require these packages.
 
 ## Register backend plugins
 

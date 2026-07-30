@@ -92,16 +92,14 @@ data:
       - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-plugin-mcp-actions-backend:pr_2236__0.1.11"
 
       # Enable backstage-plugin-scaffolder-backend-module-github-dynamic plugin which is disabled by default for better github integration
-      # - package: './dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic'
-      #   disabled: false
+      - package: './dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic'
+        disabled: false
 
       # All X2A plugins
-      - package: "oci://quay.io/mlibra/red-hat-developer-hub-backstage-plugin-x2a:2.0.0"
-      - package: "oci://quay.io/mlibra/red-hat-developer-hub-backstage-plugin-x2a-backend:2.0.0"
-      - package: "oci://quay.io/mlibra/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:1.0.0"
-      - package: "oci://quay.io/mlibra/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-x2a:1.0.0"
-      
-      # In addition, the backstage-plugin-auth-backend 0.25.6 or later is required, should be met since RHDH 1.9. Keeping this note here for a reference in case of issues.
+      - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a:2.0.0"
+      - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-backend:2.0.0"
+      - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:1.0.0"
+      - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-x2a:1.0.0"
 
 ---
 # ConfigMap: Application Configuration
@@ -253,7 +251,7 @@ data:
     #      - x2a
     #    admin:
     #      users:
-    #        - name: user:default/mareklibra
+    #        - name: user:default/[your-user]
 
     x2a:
       callbackBaseUrl: http://${SERVICE_NAME}.${NAMESPACE}.svc.cluster.local/api/x2a
@@ -295,8 +293,8 @@ spec:
   #   - GCP: standard or standard-rwo
   # List available storage classes: oc get storageclass
   # storageClassName: kubevirt-csi-infra-default
-  # storageClassName: crc-csi-hostpath-provisioner
-  storageClassName: hostpath-csi
+  storageClassName: crc-csi-hostpath-provisioner
+  # storageClassName: hostpath-csi
   resources:
     requests:
       storage: 2Gi

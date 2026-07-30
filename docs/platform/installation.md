@@ -142,7 +142,7 @@ oc apply -n my-custom-namespace -f deploy/app.yaml
 
 ### Plugin Versions
 
-To use different plugin versions, update the OCI image references in the `dynamic-plugins` ConfigMap section of `deploy/app.yaml`. The default manifest also includes the MCP server, X2A MCP extras, and DCR consent UI packages alongside the Conversion Hub plugins.
+To use different plugin versions, update the OCI image references in the `dynamic-plugins` ConfigMap section of `deploy/app.yaml`. The default manifest also includes the MCP server, X2A MCP extras, and the upstream `@backstage/plugin-auth` DCR consent UI alongside the Conversion Hub plugins.
 
 ## MCP tools
 
