@@ -96,10 +96,11 @@ data:
         disabled: false
 
       # All X2A plugins
-      - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a:2.0.0"
-      - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-backend:2.0.0"
-      - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:1.0.0"
-      - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-x2a:1.0.0"
+      # TODO: update once https://github.com/redhat-developer/rhdh-plugin-export-overlays/pull/3053 gets merged
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a:pr_3053__2.0.0"
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-backend:pr_3053__2.0.0"
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:pr_3053__1.0.0"
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-x2a:pr_3053__1.0.0"
 
 ---
 # ConfigMap: Application Configuration
