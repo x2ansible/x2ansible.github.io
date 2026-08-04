@@ -11,18 +11,15 @@ This guide adds the X2A plugins to a stock Backstage app created with the upstre
 
 Reference implementation and deeper notes live in the Red Hat plugin workspace: [rhdh-plugins/workspaces/x2a](https://github.com/redhat-developer/rhdh-plugins/tree/main/workspaces/x2a) ([`packages/app`](https://github.com/redhat-developer/rhdh-plugins/tree/main/workspaces/x2a/packages/app), [`packages/backend`](https://github.com/redhat-developer/rhdh-plugins/tree/main/workspaces/x2a/packages/backend)).
 
-The plugins are currently tested against **Backstage 1.45.3** (conforms RHDH 1.9). Other Backstage versions may work but are not guaranteed.
+The plugins are currently tested against **Backstage 1.49.4** (conforms RHDH 1.10). Other Backstage versions may work but are not guaranteed. Since **RHDH 1.10.2**, only the New Frontend System (NFS) is supported.
 
 ## Prerequisites
 
-Follow [Standalone Installation](https://backstage.io/docs/getting-started/), but create the app with the **legacy** stack so the X2A plugins work with the current APIs:
+Follow [Standalone Installation](https://backstage.io/docs/getting-started/) to create a new Backstage app:
 
 ```bash
-npx @backstage/create-app@latest --legacy
+npx @backstage/create-app@latest
 ```
-
-The X2A plugins are not yet adapted to [Backstage's new frontend system](https://backstage.io/docs/frontend-system/) - that migration is in progress.
-Until it lands, you must use `--legacy` when generating the app.
 
 Additionally, for X2A you need:
 
@@ -47,16 +44,39 @@ Published packages (verify versions before pinning in production):
 
 ### Optional components
 
-Only if you need OAuth Dynamic Client Registration UI and/or MCP tool wiring similar to production RHDH overlays:
+Core X2A conversion flows do not require the packages below. Add them only when you need DCR consent UI and/or MCP tool wiring similar to the production RHDH overlays in [`deploy/app.yaml`](https://github.com/x2ansible/x2ansible.github.io/blob/main/deploy/app.yaml).
+
+#### OAuth Dynamic Client Registration (DCR)
+
+Since RHDH 1.10, the `/oauth2/*` consent page comes from upstream [`@backstage/plugin-auth`](https://www.npmjs.com/package/@backstage/plugin-auth) (replacing the RHDH 1.9-only `x2a-dcr` workaround):
 
 ```bash
-yarn --cwd packages/app add @red-hat-developer-hub/backstage-plugin-x2a-dcr
+yarn --cwd packages/app add @backstage/plugin-auth
+```
+
+Add the plugin to the NFS `features` array in `App.tsx` (see [Register the frontend plugin](#register-the-frontend-plugin)):
+
+```tsx
+import authPlugin from '@backstage/plugin-auth';
+
+export default createApp({
+  features: [
+    // ...catalogPlugin, scaffolderPlugin, x2aPlugin, etc.
+    authPlugin,
+  ],
+});
+```
+
+Enable DCR under `auth.experimentalDynamicClientRegistration` in `app-config.yaml`. For a full example, see [`deploy/app.yaml`](https://github.com/x2ansible/x2ansible.github.io/blob/main/deploy/app.yaml).
+
+#### MCP tools
+
+```bash
 yarn --cwd packages/backend add @backstage/plugin-mcp-actions-backend
 yarn --cwd packages/backend add @red-hat-developer-hub/backstage-plugin-x2a-mcp-extras
 ```
 
 For `mcpActions` and related `app-config` fragments, see [MCP tools - Advanced configuration]({% link platform/mcp-server.md %}#advanced-configuration).
-Core X2A conversion flows do not require these packages.
 
 ## Register backend plugins
 
@@ -68,7 +88,7 @@ backend.add(import('@backstage/plugin-scaffolder-backend'));
 // Add GitHub / GitLab / Bitbucket scaffolder modules to match the auth providers you enable.
 backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
 backend.add(import('@backstage/plugin-scaffolder-backend-module-gitlab'));
-backend.add(import('@backstage/plugin-scaffolder-backend-module-bitbucket'));
+backend.add(import('@backstage/plugin-scaffolder-backend-module-bitbucket-cloud'));
 backend.add(
   import('@red-hat-developer-hub/backstage-plugin-scaffolder-backend-module-x2a'),
 );
@@ -82,78 +102,49 @@ backend.add(import('@backstage/plugin-mcp-actions-backend'));
 backend.add(import('@red-hat-developer-hub/backstage-plugin-x2a-mcp-extras'));
 ```
 
-## Register frontend routes and scaffolder extension
+## Register the frontend plugin
 
-In `packages/app/src/App.tsx` (adjust imports to match your existing `create-app` layout):
-
-1. Import the X2A page, translations, and repo field extension:
+The X2A plugin integrates with Backstage's [New Frontend System](https://backstage.io/docs/frontend-system/). In `packages/app/src/App.tsx`, import the plugin and add it to the `features` array:
 
 ```tsx
-import {
-  X2APage,
-  x2aPluginTranslations,
-  RepoAuthenticationExtension,
-} from '@red-hat-developer-hub/backstage-plugin-x2a';
-```
+import { createApp } from '@backstage/frontend-defaults';
+import catalogPlugin from '@backstage/plugin-catalog/alpha';
+import scaffolderPlugin from '@backstage/plugin-scaffolder/alpha';
+import userSettingsPlugin from '@backstage/plugin-user-settings/alpha';
+import x2aPlugin, {
+  x2aTranslationsModule,
+} from '@red-hat-developer-hub/backstage-plugin-x2a/alpha';
 
-2. If you use **OAuth DCR** and installed `backstage-plugin-x2a-dcr`:
-
-```tsx
-import { DcrConsentPage } from '@red-hat-developer-hub/backstage-plugin-x2a-dcr';
-```
-
-3. Pass plugin strings into `createApp`:
-
-```tsx
-const app = createApp({
-  // ...apis, bindRoutes, components, etc.
-  __experimentalTranslations: {
-    availableLanguages: ['en'], // add more if you use them elsewhere
-    resources: [x2aPluginTranslations],
-  },
+export default createApp({
+  features: [
+    catalogPlugin,
+    scaffolderPlugin,
+    userSettingsPlugin,
+    x2aPlugin,
+    x2aTranslationsModule,
+  ],
 });
 ```
 
-4. Add a route for the portal (path is `/x2a`, not `/x2a/`):
+That is all that is needed. The plugin self-registers its `/x2a` route, sidebar entry, and scaffolder field extensions through the frontend system.
 
-```tsx
-<Route path="/x2a" element={<X2APage />} />
+### Language configuration
+
+To enable multi-language support, add the following to your `app-config.yaml`:
+
+```yaml
+app:
+  extensions:
+    - 'api:app/app-language':
+        config:
+          defaultLanguage: en
+          availableLanguages:
+            - en
+            - de
+            - es
+            - fr
+            - it
 ```
-
-5. Wrap the scaffolder page so the conversion template can use the **Repo authentication** custom field (same pattern as the [reference `App.tsx`](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/packages/app/src/App.tsx)):
-
-```tsx
-import { ScaffolderPage } from '@backstage/plugin-scaffolder';
-import { ScaffolderFieldExtensions } from '@backstage/plugin-scaffolder-react';
-
-<Route path="/create" element={<ScaffolderPage />}>
-  <ScaffolderFieldExtensions>
-    <RepoAuthenticationExtension />
-  </ScaffolderFieldExtensions>
-</Route>
-```
-
-6. Optional DCR consent route:
-
-```tsx
-<Route path="/oauth2/*" element={<DcrConsentPage />} />
-```
-
-If repository OAuth behaves oddly, compare `packages/app/src/apis.ts` with the [reference `apis.ts`](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/packages/app/src/apis.ts) (`ScmIntegrationsApi`, `ScmAuth`).
-
-### Sidebar: Conversion Hub
-
-Static routes do not add a sidebar label by themselves (RHDH injects menu text via dynamic plugin metadata). In `packages/app/src/components/Root.tsx`, add an item next to your other `SidebarItem` entries (adjust the icon import if your app uses `@mui/icons-material` instead of `@material-ui/icons`):
-
-```tsx
-import { SidebarItem } from '@backstage/core-components';
-import ExtensionIcon from '@material-ui/icons/Extension';
-
-// Inside the main <SidebarGroup label="Menu" ...> (or equivalent).
-<SidebarItem icon={ExtensionIcon} to="x2a" text="Conversion Hub" />
-```
-
-`to="x2a"` matches the `/x2a` route registered in `App.tsx`.
 
 ## Catalog: register the conversion template
 
@@ -173,12 +164,12 @@ CSV-driven bulk flows and the `RepoAuthentication` extension are described in [C
 
 ## Configuration (pointers only)
 
-| Topic | Where it is documented |
-|--------|-------------------------|
-| OAuth providers, env vars, sign-in | [Authentication]({% link platform/authentication.md %}) |
-| RBAC / permissions for the `x2a` plugin | [Authorization]({% link platform/authorization.md %}) |
-| `x2a:` Kubernetes image, job resources, LLM and AAP credentials | [X2A backend plugin README](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/plugins/x2a-backend/README.md) and [reference app-config.yaml](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/app-config.yaml) |
-| SCM host detection (GitHub Enterprise, self-hosted GitLab, etc.) | [Workspace README — SCM Provider Detection](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/README.md) (`integrations:` host entries; tokens there are not used for X2A repo auth; OAuth applies.) |
+| Topic                                                            | Where it is documented                                                                                                                                                                                                                                          |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OAuth providers, env vars, sign-in                               | [Authentication]({% link platform/authentication.md %})                                                                                                                                                                                                         |
+| RBAC / permissions for the `x2a` plugin                          | [Authorization]({% link platform/authorization.md %})                                                                                                                                                                                                           |
+| `x2a:` Kubernetes image, job resources, LLM and AAP credentials  | [X2A backend plugin README](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/plugins/x2a-backend/README.md) and [reference app-config.yaml](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/app-config.yaml) |
+| SCM host detection (GitHub Enterprise, self-hosted GitLab, etc.) | [Workspace README — SCM Provider Detection](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/README.md) (`integrations:` host entries; tokens there are not used for X2A repo auth; OAuth applies.)                                    |
 
 If the backend API base URL seen by clients or integrations is not the default, you may need `x2a.callbackBaseUrl` (see in-cluster example in [deploy/app.yaml](https://github.com/x2ansible/x2ansible.github.io/blob/main/deploy/app.yaml)); local `yarn start` often works without it.
 
@@ -194,3 +185,12 @@ In the catalog, confirm the **conversion project** template appears (might take 
 ## API exploration
 
 Use [API Reference]({% link platform/api-reference.md %}) for the REST surface once the backend plugin is running.
+
+---
+
+## Legacy frontend system
+
+{: .warning }
+Since **RHDH 1.10.2**, only the [New Frontend System](https://backstage.io/docs/frontend-system/) (NFS) is supported.
+Apps created with `npx @backstage/create-app@latest --legacy` (or otherwise using the old frontend wiring) are not supported.
+Follow [Register the frontend plugin](#register-the-frontend-plugin) above.
