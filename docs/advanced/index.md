@@ -17,3 +17,6 @@ Review points and decision gates at each migration phase.
 
 ### [Telemetry]({% link advanced/telemetry.md %})
 Migration metrics, cost tracking, and reporting.
+
+### [Adversarial Agents]({% link advanced/adversarial-agents.md %})
+Read-only AI reviewers that inspect migration artifacts for security gaps and correctness issues.
