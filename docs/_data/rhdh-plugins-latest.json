@@ -20,10 +20,10 @@
       "backstage_version": "1.49.4",
       "container_image": "quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a:2.0.0"
     },
-    "red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-x2a": {
+    "red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module": {
       "version": "1.0.0",
       "backstage_version": "1.49.4",
-      "container_image": "quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-x2a:1.0.0"
+      "container_image": "quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module:1.0.0"
     }
   }
 }
