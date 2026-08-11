@@ -56,12 +56,14 @@ jobs:
 
       - name: Generate plugins report
         working-directory: rhdh-plugins/workspaces/x2a
-        run: ./scripts/build-dynamic-plugins.sh --report > ${{ github.workspace }}/rhdh-plugins-latest.json
+        run: |
+          mkdir -p ${{ github.workspace }}/docs/_data
+          ./scripts/build-dynamic-plugins.sh --report > ${{ github.workspace }}/docs/_data/rhdh-plugins-latest.json
 
       - name: Check for changes
         id: changes
         run: |
-          git add rhdh-plugins-latest.json
+          git add docs/_data/rhdh-plugins-latest.json
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -79,4 +81,4 @@ jobs:
             Automated PR to update the latest RHDH plugins report.
 
             This PR was created by the `nightly-build` workflow.
-          add-paths: rhdh-plugins-latest.json
+          add-paths: docs/_data/rhdh-plugins-latest.json

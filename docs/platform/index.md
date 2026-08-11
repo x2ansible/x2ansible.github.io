@@ -41,6 +41,9 @@ Create multiple conversion projects at once by uploading a CSV file.
 ### [API Reference]({% link platform/api-reference.md %})
 Swagger UI for exploring the OpenAPI specification.
 
+### [Plugin Compatibility]({% link platform/plugin-compatibility.md %})
+Latest published plugin versions and their Backstage compatibility.
+
 ## Quick Links
 
 - **Backend Plugin**: RESTful API and Kubernetes job orchestration (see ooo/x2a/plugins/x2a-backend/)
