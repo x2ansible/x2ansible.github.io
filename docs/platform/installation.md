@@ -24,7 +24,7 @@ Deploy to any namespace with these simple commands:
 ```bash
 # 1. Git clone current x2a-ansible code
 git clone https://github.com/x2ansible/x2ansible/
-cd x2a-convertor
+cd x2ansible
 
 # 2. Install operator (cluster-scoped, one-time installation)
 oc apply -f deploy/operator.yaml
@@ -34,6 +34,7 @@ oc create namespace <your-namespace>
 
 # 4. Configure and apply secrets
 cp deploy/secrets.yaml.template deploy/secrets.yaml
+oc apply -n <your-namespace> -f deploy/secrets.yaml
 
 # 5. Deploy application resources
 oc apply -n <your-namespace> -f deploy/app.yaml
