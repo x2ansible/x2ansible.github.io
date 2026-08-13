@@ -21,35 +21,32 @@ Auto-generated from `src/config/settings.py`.
 
 ## LLM Configuration
 
+The model string follows LiteLLM format: provider/model-name.
+Credentials are read directly from the environment by LiteLLM — no code changes needed to switch providers.
+
+Provider env vars:
+
+- OpenAI / compatible endpoints: `OPENAI_API_KEY`, `OPENAI_API_BASE`
+- Anthropic: `ANTHROPIC_API_KEY`
+- AWS Bedrock: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` (or `AWS_BEARER_TOKEN_BEDROCK` for token-based auth)
+- Google Vertex AI: `VERTEXAI_PROJECT`, `VERTEXAI_LOCATION`, `GOOGLE_APPLICATION_CREDENTIALS`
+- Google Gemini (direct): `GEMINI_API_KEY`
+
 | Variable | Type | Default | Description |
 |----------|------|---------|-------------|
 | `LLM_MODEL` | string | `openai/gpt-oss-120b-maas` | Language model to use |
 | `MAX_TOKENS` | integer | `8192` | Maximum tokens for LLM responses |
 | `TEMPERATURE` | float | `0.1` | Model temperature (creativity) |
-| `REASONING_EFFORT` | string | - | Claude reasoning effort level |
+| `REASONING_EFFORT` | string | - | Reasoning effort level |
 | `RATE_LIMIT_REQUESTS` | integer | - | Rate limit requests per second |
 | `LLM_MAX_RETRIES` | integer | `6` | Maximum retry attempts on throttling (429) and server errors |
 | `LLM_READ_TIMEOUT` | integer | `900` | Read timeout in seconds for LLM API responses (applies to both Bedrock and OpenAI) |
-| `LLM_CONNECT_TIMEOUT` | integer | `60` | Connection timeout in seconds for LLM API connections (applies to both Bedrock and OpenAI) |
-
-## OpenAI Configuration
-
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `OPENAI_API_BASE` | string | - | OpenAI/compatible API endpoint |
-| `OPENAI_API_KEY` | secret | `not-needed` | API key for OpenAI provider |
-
-## AWS Bedrock Configuration
-
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `AWS_BEARER_TOKEN_BEDROCK` | secret | - | AWS Bedrock bearer token |
-| `AWS_ACCESS_KEY_ID` | secret | - | AWS access key ID |
-| `AWS_SECRET_ACCESS_KEY` | secret | - | AWS secret access key |
-| `AWS_SESSION_TOKEN` | secret | - | AWS session token (temporary credentials) |
-| `AWS_REGION` | string | `eu-west-2` | AWS region for Bedrock |
+| `LLM_CONNECT_TIMEOUT` | integer | `60` | Connection timeout in seconds for LLM API calls |
 
 ## Ansible Automation Platform Configuration
+
+Supports both Controller API and Galaxy API (Private Automation Hub).
+Galaxy API URL is derived from controller_url and uses the same oauth_token.
 
 | Variable | Type | Default | Description |
 |----------|------|---------|-------------|
