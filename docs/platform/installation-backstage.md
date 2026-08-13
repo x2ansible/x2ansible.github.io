@@ -33,14 +33,14 @@ From the **repository root** of your generated app (where `packages/app` and `pa
 ```bash
 yarn --cwd packages/app add @red-hat-developer-hub/backstage-plugin-x2a
 yarn --cwd packages/backend add @red-hat-developer-hub/backstage-plugin-x2a-backend
-yarn --cwd packages/backend add @red-hat-developer-hub/backstage-plugin-scaffolder-backend-module-x2a
+yarn --cwd packages/backend add @red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module
 ```
 
 Published packages (verify versions before pinning in production):
 
 - [@red-hat-developer-hub/backstage-plugin-x2a](https://www.npmjs.com/package/@red-hat-developer-hub/backstage-plugin-x2a) - frontend UI and scaffolder field extension exports.
 - [@red-hat-developer-hub/backstage-plugin-x2a-backend](https://www.npmjs.com/package/@red-hat-developer-hub/backstage-plugin-x2a-backend) - backend API and job orchestration ([install instructions in source README](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/plugins/x2a-backend/README.md)).
-- [@red-hat-developer-hub/backstage-plugin-scaffolder-backend-module-x2a](https://www.npmjs.com/package/@red-hat-developer-hub/backstage-plugin-scaffolder-backend-module-x2a) - scaffolder module and bundled conversion template.
+- [@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module](https://www.npmjs.com/package/@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module) - scaffolder module and bundled conversion template.
 
 ### Optional components
 
@@ -90,7 +90,7 @@ backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
 backend.add(import('@backstage/plugin-scaffolder-backend-module-gitlab'));
 backend.add(import('@backstage/plugin-scaffolder-backend-module-bitbucket-cloud'));
 backend.add(
-  import('@red-hat-developer-hub/backstage-plugin-scaffolder-backend-module-x2a'),
+  import('@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module'),
 );
 backend.add(import('@red-hat-developer-hub/backstage-plugin-x2a-backend'));
 ```
@@ -155,7 +155,7 @@ catalog:
   locations:
     - type: file
       # Tweak following path based on your actual directory structure. It's relative from the perspective of `packages/backend`.
-      target: ../../node_modules/@red-hat-developer-hub/backstage-plugin-scaffolder-backend-module-x2a/templates/conversion-project-template.yaml
+      target: ../../node_modules/@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module/templates/conversion-project-template.yaml
       rules:
         - allow: [Template]
 ```

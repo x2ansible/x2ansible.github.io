@@ -99,7 +99,7 @@ data:
       - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a:bs_1.49.4__2.0.0"
       - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-backend:bs_1.49.4__2.0.0"
       - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:bs_1.49.4__1.0.0"
-      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-x2a:bs_1.49.4__1.0.0"
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module:bs_1.49.4__2.0.0"
 
 ---
 # ConfigMap: Application Configuration
@@ -231,7 +231,7 @@ data:
       locations:
         # x2a Create Project template
         - type: file
-          target: /opt/app-root/src/dynamic-plugins-root/red-hat-developer-hub-backstage-plugin-scaffolder-backend-module-x2a/templates/conversion-project-template.yaml
+          target: /opt/app-root/src/dynamic-plugins-root/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module/templates/conversion-project-template.yaml
           rules:
             - allow: [Template]
         # CUSTOMIZATION: Remove or update per your organization and identity provider configured above

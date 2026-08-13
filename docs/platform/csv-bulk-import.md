@@ -12,7 +12,7 @@ The CSV bulk import lets users create multiple conversion projects at once by up
 ## How to Access
 
 1. Open the Backstage instance and navigate to `/create`.
-2. Select the **Chef-to-Ansible Conversion Project** template (`chef-conversion-project-template`).
+2. Select the **Infrastructure Conversion Project** template (`x2a-conversion-project-template`).
 3. On the first page, choose **CSV upload** as the input method.
 4. Upload the CSV file and proceed through the wizard.
 
