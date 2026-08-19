@@ -24,7 +24,7 @@ This example uses the AWS Bedrock provider. You'll need to configure the followi
 
 - **AWS_REGION**: The AWS region where the model will run
 - **AWS_BEARER_TOKEN_BEDROCK**: The API key to connect to the LLM
-- **LLM_MODEL**: The model to use (this guide uses `bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0`)
+- **LLM_MODEL**: The model to use (this guide uses `bedrock/global.anthropic.claude-sonnet-4-5-20250929-v1:0`)
 
 ## Initialization
 
@@ -33,7 +33,7 @@ The first thing we need to do is create the migration-plan.md file which will be
 ```bash
 podman run --rm -ti \
   -v $(pwd)/:/app/source:Z \
-  -e LLM_MODEL=bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0 \
+  -e LLM_MODEL=bedrock/global.anthropic.claude-sonnet-4-5-20250929-v1:0 \
   -e AWS_REGION=$AWS_REGION \
   -e AWS_BEARER_TOKEN_BEDROCK=$AWS_BEARER_TOKEN_BEDROCK \
   quay.io/x2ansible/x2a-convertor:latest \
@@ -47,7 +47,7 @@ This will create a **migration-plan.md** with a lot of details.
 ```bash
 podman run --rm -ti \
   -v $(pwd)/:/app/source:Z \
-  -e LLM_MODEL=bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0 \
+  -e LLM_MODEL=bedrock/global.anthropic.claude-sonnet-4-5-20250929-v1:0 \
   -e AWS_REGION=$AWS_REGION \
   -e AWS_BEARER_TOKEN_BEDROCK=$AWS_BEARER_TOKEN_BEDROCK \
   quay.io/x2ansible/x2a-convertor:latest \
@@ -61,7 +61,7 @@ This will make a blueprint of what the model understands about the migration of 
 ```bash
 podman run --rm -ti \
   -v $(pwd)/:/app/source:Z \
-  -e LLM_MODEL=bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0 \
+  -e LLM_MODEL=bedrock/global.anthropic.claude-sonnet-4-5-20250929-v1:0 \
   -e AWS_REGION=$AWS_REGION \
   -e AWS_BEARER_TOKEN_BEDROCK=$AWS_BEARER_TOKEN_BEDROCK \
   -e AAP_CONTROLLER_URL=$AAP_CONTROLLER_URL \

@@ -24,13 +24,13 @@ This example uses the AWS Bedrock provider. You'll need to configure the followi
 
 - **AWS_REGION**: The AWS region where the model will run
 - **AWS_BEARER_TOKEN_BEDROCK**: The API key to connect to the LLM
-- **LLM_MODEL**: The model to use (this guide uses `bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0`)
+- **LLM_MODEL**: The model to use (this guide uses `bedrock/global.anthropic.claude-sonnet-4-5-20250929-v1:0`)
 
 Export these variables in your shell before running commands:
 
 ```bash
 # LLM provider — format: provider/model-name (see Requirements table above)
-export LLM_MODEL=bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0
+export LLM_MODEL=bedrock/global.anthropic.claude-sonnet-4-5-20250929-v1:0
 
 # AWS Bedrock credentials
 export AWS_REGION=your-aws-region

@@ -37,6 +37,7 @@ Options:
 Commands:
   adversarial-run  Run adversarial validation agents for a workflow phase.
   analyze          Perform detailed analysis and create module migration...
+  health-check     Check connectivity to the configured model and AAP.
   init             Initialize project with interactive message
   migrate          Migrate project based on migration plan from analysis
   publish-aap      Sync a git repository to Ansible Automation Platform.
@@ -117,6 +118,27 @@ Usage: analyze [OPTIONS] USER_REQUIREMENTS
 Options:
   --source-dir DIRECTORY  Source directory to analyze
   --help                  Show this message and exit.
+```
+
+## health-check
+
+Check connectivity to the configured model and AAP.
+
+### Usage
+
+```bash
+uv run app.py health-check [OPTIONS]
+```
+
+### Full Help
+
+```
+Usage: health-check [OPTIONS]
+
+  Check connectivity to the configured model and AAP.
+
+Options:
+  --help  Show this message and exit.
 ```
 
 ## init
