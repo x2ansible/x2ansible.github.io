@@ -42,6 +42,7 @@ Provider env vars:
 | `LLM_MAX_RETRIES` | integer | `6` | Maximum retry attempts on throttling (429) and server errors |
 | `LLM_READ_TIMEOUT` | integer | `900` | Read timeout in seconds for LLM API responses (applies to both Bedrock and OpenAI) |
 | `LLM_CONNECT_TIMEOUT` | integer | `60` | Connection timeout in seconds for LLM API calls |
+| `SUMMARY_CONTEXT_SIZE` | enum: 'compact', 'medium', 'large', 'full' | `compact` | Controls conversation summarization aggressiveness. Higher values keep more context before summarizing (compact=1x, medium=1.5x, large=2x, full=3x). |
 
 ## Ansible Automation Platform Configuration
 
