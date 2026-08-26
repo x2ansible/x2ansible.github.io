@@ -18,8 +18,8 @@ Agents are defined in the web platform. Each agent has a name, a prompt describi
 When you trigger an adversarial review from the module page, x2a:
 
 1. Passes the relevant artifacts from the completed phase to the x2a-convertor `adversarial-run` command.
-2. Runs each configured agent sequentially using read-only tools - agents cannot modify any files.
-3. Produces a markdown report and a structured JSON summary in the module's output directory.
+2. Runs each selected agent sequentially using read-only tools - agents cannot modify any files.
+3. Produces a markdown report and a structured JSON summary committed back to the target repository.
 4. Surfaces the report and job details in the module page alongside the regular phase results.
 
 **Supported phases:** adversarial reviews can run against `analyze` outputs (the analysis plan) or `migrate` outputs (the generated Ansible). The `init` and `publish` phases are not reviewable.
@@ -36,7 +36,7 @@ Adversarial agents are managed through the **Manage Adversarial Agents** link in
 |-----------|-------------|
 | Create | Define a name, a prompt describing what to review, the phases the agent applies to, and whether findings are critical |
 | Edit | Update any field on an existing agent |
-| Delete | Remove an agent; existing projects that selected the agent retain their snapshot |
+| Delete | Remove an agent |
 
 No default agents are provided. Your organization decides what to review and at what severity.
 
@@ -52,19 +52,19 @@ Agents can also be managed directly through the REST API:
 | Update agent | `PUT /api/v1/adversarial-agents/:id` | Admin write |
 | Delete agent | `DELETE /api/v1/adversarial-agents/:id` | Admin write |
 
----
+`GET /api/v1/adversarial-agents` accepts an optional `?phase=analyze|migrate` query parameter to filter by phase. The response body is:
 
-## Selecting agents for a project
-
-When creating a project with the scaffolder template, the **Adversarial Agents** field lets you pick which agents will be associated with the project. The selection is stored as a snapshot with the project record, so later edits to the agent definitions do not affect existing projects.
-
-Only agents that are applicable to `analyze` or `migrate` appear in the picker.
+```json
+{ "agents": [ ... ], "total": 3 }
+```
 
 ---
 
 ## Running an adversarial review
 
-Once an `analyze` or `migrate` phase has completed successfully, a **Run Adversarial Review** button appears on that tab in the module page. Click it to trigger the review for that phase.
+Once an `analyze` or `migrate` phase has completed successfully, an **Adversarial Review** accordion appears on that tab in the module page. Inside it, select one or more agents from the multi-select dropdown and click **Run Adversarial Review**. The button is disabled until at least one agent is selected.
+
+The dropdown is filtered to agents applicable to the current phase. You can run the review multiple times with different agent selections; each run replaces the previous adversarial job for that phase.
 
 The review runs as a standard x2a job - the same infrastructure, status polling, and artifact collection used by regular phases. You can watch its progress in the module page.
 
@@ -82,9 +82,12 @@ Request body:
 {
   "phase": "analyze",
   "moduleId": "<uuid>",
+  "agentIds": ["<uuid>", "<uuid>"],
   "targetRepoAuth": { "token": "<token>" }
 }
 ```
+
+`agentIds` is required and must contain at least one valid adversarial agent ID. `targetRepoAuth` is optional.
 
 Response (`202 Accepted`):
 
@@ -95,24 +98,22 @@ Response (`202 Accepted`):
 | Status | Meaning |
 |--------|---------|
 | `202` | Job created and queued |
-| `400` | No adversarial agents configured for this project, or invalid phase |
-| `404` | Module not found |
+| `400` | Invalid phase, module not found in project, or one or more agent IDs not found |
+| `404` | Project not found |
 | `409` | Adversarial job already running for this module and phase |
 
 ---
 
 ## Viewing results
 
-After a review job completes, the module page shows a full **Adversarial Job Details** panel for the relevant phase, including:
+As soon as a phase completes successfully, the **Adversarial Review** accordion becomes visible on that tab - even before any adversarial run has been triggered. After a run completes, the accordion summary shows the finding counts (critical and warning). Expanding it shows:
 
 - Job status and error details if it failed
 - Adversarial report artifact link (the markdown findings report)
+- Critical findings count and warning findings count
 - Start time, duration, attempt count, and total elapsed time
-- Kubernetes job name and internal job ID
+- Kubernetes job name, internal job ID, and commit ID
 - Streaming log viewer with a download option
-- Telemetry table for cost and token usage
-
-The panel is invisible until the first adversarial run completes for that phase.
 
 ---
 
