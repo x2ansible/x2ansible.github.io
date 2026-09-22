@@ -27,7 +27,7 @@ Complete command-line interface reference for X2A Convertor.
 ## Main Command
 
 ```
-Usage:  [OPTIONS] COMMAND [ARGS]...
+Usage:  [OPTIONS] [COMMAND] [ARGS]...
 
   X2Ansible - Infrastructure Migration Tool
 
@@ -43,7 +43,6 @@ Commands:
   publish-aap      Sync a git repository to Ansible Automation Platform.
   publish-project  Create or append to an Ansible project for a migrated...
   report           Report execution artifacts to the x2a API
-  validate         Validate migrated module against original configuration
 ```
 
 ## adversarial-run
@@ -404,29 +403,4 @@ Options:
                           analyze/migrate/publish to include telemetry in the
                           report.
   --help                  Show this message and exit.
-```
-
-## validate
-
-Validate migrated module against original configuration
-
-### Usage
-
-```bash
-uv run app.py validate [OPTIONS] MODULE_NAME
-```
-
-### Arguments
-
-- `MODULE_NAME`
-
-### Full Help
-
-```
-Usage: validate [OPTIONS] MODULE_NAME
-
-  Validate migrated module against original configuration
-
-Options:
-  --help  Show this message and exit.
 ```
