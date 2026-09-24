@@ -16,9 +16,9 @@
       "container_image": "quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:1.0.1"
     },
     "red-hat-developer-hub-backstage-plugin-x2a": {
-      "version": "2.0.1",
+      "version": "2.0.2",
       "backstage_version": "1.49.4",
-      "container_image": "quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a:2.0.1"
+      "container_image": "quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a:2.0.2"
     },
     "red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module": {
       "version": "2.0.1",
