@@ -1,27 +1,64 @@
-<script>
-  (function () {
-    function openSvgInNewTab(svg) {
-      var serializer = new XMLSerializer();
-      var svgString = serializer.serializeToString(svg);
-      var blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-      var url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
-    }
+<!-- <nav class="x2a-version-switcher" aria-label="Documentation versions"> -->
+<!--   <strong>Documentation version</strong> -->
+<!--   <a href="{{ '/latest/' | relative_url }}">Latest</a> · -->
+<!--   <a href="{{ '/v0.5/' | relative_url }}">v0.5</a> · -->
+<!--   <a href="{{ '/versions.html' | relative_url }}">All versions</a> -->
+<!-- </nav> -->
 
-    function attachClickHandlers() {
-      document.querySelectorAll('svg[id^="mermaid-"]').forEach(function (svg) {
-        var container = svg.closest('pre') || svg.parentElement;
-        if (container.dataset.zoomAttached) return;
-        container.dataset.zoomAttached = 'true';
-        container.classList.add('mermaid-zoom-target');
+<!-- <script> -->
+<!--   (function () { -->
+<!--     // Just the Docs builds one shared navigation tree. On a frozen version, -->
+<!--     // keep that tree useful by pointing its versioned links at the current -->
+<!--     // version instead of at /latest/. -->
+<!--     function localizeVersionNavigation() { -->
+<!--       var match = window.location.pathname.match(/^\/(v[^\/]+)(?:\/|$)/); -->
+<!--       if (!match) return; -->
+<!--       document.querySelectorAll('#site-nav a[href^="/latest/"]').forEach(function (link) { -->
+<!--         link.href = link.getAttribute('href').replace(/^\/latest\//, '/' + match[1] + '/'); -->
+<!--       }); -->
+<!--     } -->
 
-        container.addEventListener('click', function () {
-          openSvgInNewTab(svg);
-        });
-      });
-    }
+<!--     function addVersionLinksToSidebar() { -->
+<!--       var nav = document.querySelector('#site-nav > ul.nav-list'); -->
+<!--       if (!nav || nav.querySelector('.x2a-version-nav')) return; -->
 
-    var observer = new MutationObserver(function () { attachClickHandlers(); });
-    observer.observe(document.body, { childList: true, subtree: true });
-  })();
-</script>
+<!--       var item = document.createElement('li'); -->
+<!--       item.className = 'nav-list-item x2a-version-nav'; -->
+<!--       item.innerHTML = '<span class="nav-list-link">Documentation versions</span>' + -->
+<!--         '<ul class="nav-list">' + -->
+<!--         '<li class="nav-list-item"><a class="nav-list-link" href="/v0.5/">v0.5</a></li>' + -->
+<!--         '</ul>'; -->
+<!--       nav.appendChild(item); -->
+<!--     } -->
+
+<!--     function openSvgInNewTab(svg) { -->
+<!--       var serializer = new XMLSerializer(); -->
+<!--       var svgString = serializer.serializeToString(svg); -->
+<!--       var blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' }); -->
+<!--       var url = URL.createObjectURL(blob); -->
+<!--       window.open(url, '_blank'); -->
+<!--     } -->
+
+<!--     function attachClickHandlers() { -->
+<!--       document.querySelectorAll('svg[id^="mermaid-"]').forEach(function (svg) { -->
+<!--         var container = svg.closest('pre') || svg.parentElement; -->
+<!--         if (container.dataset.zoomAttached) return; -->
+<!--         container.dataset.zoomAttached = 'true'; -->
+<!--         container.classList.add('mermaid-zoom-target'); -->
+
+<!--         container.addEventListener('click', function () { -->
+<!--           openSvgInNewTab(svg); -->
+<!--         }); -->
+<!--       }); -->
+<!--     } -->
+
+<!--     localizeVersionNavigation(); -->
+<!--     addVersionLinksToSidebar(); -->
+<!--     var observer = new MutationObserver(function () { -->
+<!--       localizeVersionNavigation(); -->
+<!--       addVersionLinksToSidebar(); -->
+<!--       attachClickHandlers(); -->
+<!--     }); -->
+<!--     observer.observe(document.body, { childList: true, subtree: true }); -->
+<!--   })(); -->
+<!-- </script> -->

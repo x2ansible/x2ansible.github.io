@@ -22,15 +22,15 @@ This repository (`x2ansible.github.io`) hosts the X2Ansible documentation site a
 ```
 .
 ├── docs/                      # Jekyll documentation site
-│   ├── concepts/             # Platform architecture and migration engine
-│   ├── phases/               # Four-phase migration workflow
-│   ├── platform/             # Web platform installation and auth
-│   ├── convertor-reference/  # CLI usage and configuration
-│   └── advanced/             # Advanced topics
-├── deploy/                   # OpenShift deployment manifests
-│   ├── app.yaml             # Backstage CR and ConfigMaps
-│   ├── operator.yaml        # RHDH operator
-│   └── secrets.yaml.template # Credential template
+│   ├── latest/               # Current documentation (the working tree)
+│   ├── v0.5/                 # Frozen documentation for release 0.5
+│   ├── versions.md           # Version index
+│   └── developing/           # Release procedures (inside latest/)
+├── deploy/                   # Current OpenShift deployment manifests
+│   ├── app.yaml              # Backstage CR and ConfigMaps
+│   ├── operator.yaml         # RHDH operator
+│   ├── secrets.yaml.template # Credential template
+│   └── v0.5/                 # Frozen deployment manifests for release 0.5
 └── shell.nix                # Playwright environment for screenshots
 ```
 
@@ -155,9 +155,23 @@ router:B --> T:agent2  # OK: Different edge instances
 - Use `stateDiagram-v2` for stage-by-stage progression
 - Add notes to explain what happens in each state
 
-See `docs/index.md` for the platform architecture example and `docs/phases/migrate.md` for a process flowchart with retry logic.
+See `docs/latest/index.md` for the platform architecture example and `docs/latest/phases/migrate.md` for a process flowchart with retry logic.
 
-### Generating Diagram Screenshots
+### Documentation versions
+
+Documentation is published under a version prefix. `docs/latest/` and the root `deploy/` directory describe the current release. Released versions (for example `docs/v0.5/` and `deploy/v0.5/`) are frozen snapshots and **must not be modified** after release. Do not update, fix, or otherwise touch a frozen version when current behavior changes; make those changes only in `latest/` and the live `deploy/` directory, then create a new version snapshot when releasing.
+
+To add a release, follow the checklist in [`docs/latest/developing/versioning.md`](docs/latest/developing/versioning.md). In short:
+
+1. Update and test `docs/latest/` and `deploy/` for the new release.
+2. Copy both trees to `docs/v<version>/` and `deploy/v<version>/` (excluding any real secrets).
+3. Add a `docs/_includes/deploy-v<version>` symlink to the versioned deployment directory.
+4. Change copied deployment instructions to use `deploy/v<version>/` and the matching include symlink.
+5. Add the release to `docs/versions.md`, build, and check links.
+
+Never let a frozen version reference the live `deploy/` directory: deployment manifests change independently from documentation.
+
+## Generating Diagram Screenshots
 
 When Mermaid diagrams need to be captured as images:
 

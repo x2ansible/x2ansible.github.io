@@ -1,0 +1,22 @@
+{%- comment -%}
+  Version-aware navigation. Just the Docs normally builds one navigation tree
+  from all pages; the duplicate page titles in latest/ and v0.5/ make that
+  ambiguous. Select pages from the current URL before rendering the tree.
+{%- endcomment -%}
+
+<nav aria-label="Main" id="site-nav" class="site-nav">
+  {% if page.url contains '/v0.5/' %}
+    {% assign version_pages = site.html_pages | where_exp: "item", "item.url contains '/v0.5/'" %}
+  {% else %}
+    {% assign version_pages = site.html_pages | where_exp: "item", "item.url contains '/latest/'" %}
+  {% endif %}
+
+  {% assign pages_top_size = version_pages
+    | where_exp: "item", "item.title != nil"
+    | where_exp: "item", "item.parent == nil"
+    | where_exp: "item", "item.nav_exclude != true"
+    | size %}
+  {% if pages_top_size > 0 %}
+    {% include components/nav.html pages=version_pages %}
+  {% endif %}
+</nav>

@@ -42,20 +42,20 @@ jobs:
 
       - name: Copy generated docs
         run: |
-          mkdir -p docs/convertor-reference
-          # Copy CLI-generated docs to convertor-reference/
-          cp -v x2a-convertor/docs/cli-reference.md docs/convertor-reference/
-          cp -v x2a-convertor/docs/configuration_options.md docs/convertor-reference/
-          cp -rv x2a-convertor/docs/getting-started docs/
+          mkdir -p docs/latest/convertor-reference
+          # Copy CLI-generated docs to the latest convertor reference.
+          cp -v x2a-convertor/docs/cli-reference.md docs/latest/convertor-reference/
+          cp -v x2a-convertor/docs/configuration_options.md docs/latest/convertor-reference/
+          cp -rv x2a-convertor/docs/getting-started docs/latest/
           # List what was copied
           echo "=== Copied files ==="
-          ls -la docs/convertor-reference/
-          ls -la docs/getting-started/
+          ls -la docs/latest/convertor-reference/
+          ls -la docs/latest/getting-started/
 
       - name: Check for changes
         id: changes
         run: |
-          git add docs/
+          git add docs/latest/convertor-reference/ docs/latest/getting-started/
           git status
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -75,4 +75,6 @@ jobs:
             [x2a-convertor](https://github.com/x2ansible/x2a-convertor).
 
             This PR was created by the `x2a-convertor-sync` workflow.
-          add-paths: docs/
+          add-paths: |
+            docs/latest/convertor-reference/
+            docs/latest/getting-started/
