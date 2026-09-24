@@ -1,0 +1,47 @@
+# Custom dynamic plugins for X2A, referenced by AutomationPortal
+# spec.plugins.customPluginsRef. The operator MERGES these on top of the base
+# plugin set it generates in portal-dynamic-plugins (reconcile-safe — do NOT edit
+# portal-dynamic-plugins directly; it is regenerated on every reconcile).
+#
+# Pinned, reproducible ghcr overlay tags. All bs_1.49.4__* tags require RHDH 1.10
+# (productized Backstage 1.49.4). Nightly quay builds are the commented alternative.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: x2a-dynamic-plugins
+  namespace: automation-portal
+data:
+  dynamic-plugins.yaml: |
+    plugins:
+      # /oauth2/* consent page for Dynamic Client Registration (needed on RHDH 1.10)
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-plugin-auth:bs_1.49.4__0.1.6"
+        disabled: false
+      # mcp-actions-backend: pr_2236 overlay for backstage/backstage#33062 until a stable
+      # bs_1.49.4__* tag ships in rhdh-plugin-export-overlays — then replace this package line.
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-plugin-mcp-actions-backend:pr_2236__0.1.11"
+        disabled: false
+      # GitHub scaffolder backend module (bundled with RHDH, disabled by default) — enable for GitHub PR flows
+      - package: "./dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic"
+        disabled: false
+      # X2A plugin set (pinned)
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a:bs_1.49.4__2.0.0"
+        disabled: false
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-backend:bs_1.49.4__2.0.0"
+        disabled: false
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:bs_1.49.4__1.0.0"
+        disabled: false
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-dcr:bs_1.49.4__1.0.0"
+        disabled: false
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module:bs_1.49.4__2.0.0"
+        disabled: false
+      # --- Nightly alternative (uncomment to track HEAD instead of pinned tags) ---
+      # - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a:nightly"
+      #   disabled: false
+      # - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-backend:nightly"
+      #   disabled: false
+      # - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:nightly"
+      #   disabled: false
+      # - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-dcr:nightly"
+      #   disabled: false
+      # - package: "oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module:nightly"
+      #   disabled: false
