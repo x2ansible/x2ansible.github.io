@@ -66,7 +66,7 @@ uv run app.py publish-project my-project nginx_multisite
 
 - [CLI Reference]({% link latest/convertor-reference/cli-reference.md %}): Complete command documentation
 - [Configuration]({% link latest/convertor-reference/configuration_options.md %}): Environment variables and LLM provider setup
-- [Usage Examples]({% link latest/convertor-reference/usage.md %}): Detailed CLI and Docker usage examples
+- [Getting Started]({% link latest/convertor-reference/getting-started/index.md %}): Native CLI and Docker/Podman walkthroughs
 
 ## Source Technologies
 

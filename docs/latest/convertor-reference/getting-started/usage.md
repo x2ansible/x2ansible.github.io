@@ -2,6 +2,7 @@
 layout: default
 title: Usage
 parent: Getting Started
+grand_parent: X2A Convertor Reference
 nav_order: 1
 ---
 
