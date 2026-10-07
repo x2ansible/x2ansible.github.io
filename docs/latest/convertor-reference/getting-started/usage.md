@@ -1,8 +1,7 @@
 ---
 layout: default
 title: Usage
-parent: Getting Started
-grand_parent: X2A Convertor Reference
+parent: X2A Convertor Reference
 nav_order: 1
 ---
 
@@ -39,7 +38,6 @@ export AWS_BEARER_TOKEN_BEDROCK=your-bearer-token
 
 # For AAP Collection Discovery during migrate (optional)
 # When set, migrate will search Private Hub for reusable collections
-# See: /concepts/export-agents#aap-discovery-agent-optional
 export AAP_CONTROLLER_URL=your-aap-url
 export AAP_ORG_NAME=your-org-name
 export AAP_OAUTH_TOKEN=your-oauth-token
