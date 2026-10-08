@@ -11,11 +11,13 @@ This guide covers deploying the X2A Backstage plugin on OpenShift using Red Hat 
 
 ## Prerequisites
 
-- OpenShift cluster access (CRC or production cluster)
-- Cluster-admin rights (for operator installation)
-- `oc` CLI tool installed and configured([documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc#cli-getting-started))
-- AWS credentials with access to Bedrock (for LLM functionality)
-- Ansible Automation Platform instance (optional, for publishing roles)
+- Access to an OpenShift or Kubernetes cluster
+- Cluster-admin permissions (for operator installation)
+- The `oc` or `kubectl` CLI tool, installed and configured ([documentation](https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc#cli-getting-started))
+- LLM inference credentials for OpenAI, Anthropic, AWS Bedrock, Azure AI, or any OpenAI-compatible endpoint. In this example, we use AWS credentials with access to Bedrock for LLM functionality.
+- An Ansible Automation Platform instance (optional, for publishing roles)
+- Credentials for your Git provider (see the [Authentication]({% link latest/platform/authentication.md %}) page for setup instructions)
+
 
 ## Quick Start
 
@@ -38,9 +40,6 @@ oc apply -n <your-namespace> -f deploy/secrets.yaml
 
 # 5. Deploy application resources
 oc apply -n <your-namespace> -f deploy/app.yaml
-
-# Edit deploy/secrets.yaml with your actual credentials
-oc apply -n <your-namespace> -f deploy/secrets.yaml
 
 # 6. Get the application URL
 oc get route developer-hub -n <your-namespace> -o jsonpath='https://{.spec.host}{"\n"}'
