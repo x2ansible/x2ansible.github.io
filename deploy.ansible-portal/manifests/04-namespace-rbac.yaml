@@ -1,0 +1,42 @@
+# Namespaced RBAC for X2A conversion Jobs.
+#
+# The X2A backend runs conversions as Kubernetes Jobs in the Portal's own namespace
+# and reads their pods/logs plus per-job secrets/configmaps. A namespaced Role bound
+# to the Backstage pod's ServiceAccount is sufficient — NO ClusterRole is needed.
+# The Automation Portal operator runs the Backstage pod as the `default` SA.
+#
+# X2A auto-detects its own namespace from the in-cluster config, so the namespaced
+# `listNamespacedPod` connection test passes. (Never hardcode a namespace like
+# `x2ansible` — that is an upstream deploy/app.yaml assumption, not required here.)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: x2a-role
+  namespace: automation-portal
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create", "get", "list", "watch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "get", "delete", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create", "get", "delete", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: x2a-rolebinding
+  namespace: automation-portal
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: automation-portal
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: x2a-role

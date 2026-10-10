@@ -1,0 +1,53 @@
+# Operators for the Path-1 (Automation Portal operator) X2A install.
+#
+#   - RHDH operator      : cluster-scoped dependency (the Portal operator drives it).
+#                          Channel `fast` currently resolves to v1.10.x — X2A requires 1.10.
+#   - Automation Portal  : namespace-scoped into the target namespace via an OperatorGroup.
+#
+# Both come from the built-in `redhat-operators` catalog. No Konflux bundle needed.
+#
+# On shared clusters, the RHDH Subscription below may upgrade an existing openshift-operators
+# CSV when channel `fast` diverges — confirm with cluster owners before applying (see README Step 3).
+#
+# AAP 2.7 docs: install-install_the_automation_portal_operator
+#   https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/install-install_the_automation_portal_operator
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: automation-portal
+---
+# RHDH operator — installed cluster-wide in the global operator group.
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: rhdh
+  namespace: openshift-operators
+spec:
+  channel: fast
+  installPlanApproval: Automatic
+  name: rhdh
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+---
+# Automation Portal operator — namespace-scoped OperatorGroup targeting only its own namespace.
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: automation-portal-og
+  namespace: automation-portal
+spec:
+  targetNamespaces:
+    - automation-portal
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: automation-portal-operator
+  namespace: automation-portal
+spec:
+  channel: fast
+  installPlanApproval: Automatic
+  name: automation-portal-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
