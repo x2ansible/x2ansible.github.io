@@ -36,7 +36,7 @@ Provider env vars:
 |----------|------|---------|-------------|
 | `LLM_MODEL` | string | `openai/gpt-oss-120b-maas` | Language model to use |
 | `MAX_TOKENS` | integer | `8192` | Maximum tokens for LLM responses |
-| `TEMPERATURE` | float | `0.1` | Model temperature (creativity) |
+| `TEMPERATURE` | float | - | Model temperature (creativity) |
 | `REASONING_EFFORT` | string | - | Reasoning effort level |
 | `RATE_LIMIT_REQUESTS` | integer | - | Rate limit requests per second |
 | `LLM_MAX_RETRIES` | integer | `6` | Maximum retry attempts on throttling (429) and server errors |
@@ -63,8 +63,6 @@ Galaxy API URL is derived from controller_url and uses the same oauth_token.
 | `AAP_PROJECT_NAME` | string | - | Project name in AAP |
 | `AAP_SCM_CREDENTIAL_ID` | integer | - | Credential ID for private repos |
 | `AAP_GALAXY_REPOSITORY` | string | `published` | Galaxy repository to search (published, staging, community) |
-| `AAP_EE_IMAGE` | string | `quay.io/x2ansible/ee-x2a:latest` | Execution Environment container image for AAP (molecule tests and role runs) |
-| `AAP_INVENTORY_NAME` | string | `Molecule Local` | AAP inventory name for molecule tests (created if missing) |
 
 ## Processing Configuration
 

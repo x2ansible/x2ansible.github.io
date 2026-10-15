@@ -73,24 +73,7 @@ podman run --rm -ti \
   migrate --source-dir /app/source/ --source-technology Chef --high-level-migration-plan migration-plan.md --module-migration-plan migration-plan-nginx-multisite.md "Convert the 'nginx-multisite' module"
 ```
 
-This will generate real Ansible code, primarily in `ansible/roles/nginx_multisite` with all details. When AAP env vars are set, it will also search your Private Automation Hub for reusable collections (see [AAP Discovery Agent]({% link latest/phases/migrate.md %})).
-
-## Publish Project
-
-```bash
-podman run --rm -ti \
-  -v $(pwd)/:/app/source:Z \
-  quay.io/x2ansible/x2a-convertor:latest \
-  publish-project my-migration-project nginx_multisite
-```
-
-This creates (or appends to) an Ansible project under `<project-id>/ansible-project/`. On the first module it creates the full skeleton (ansible.cfg, collections, inventory). On subsequent modules it adds the role and playbook.
-
-- ansible.cfg: `./<project-id>/ansible-project/ansible.cfg`
-- Collections requirements: `./<project-id>/ansible-project/collections/requirements.yml`
-- Inventory: `./<project-id>/ansible-project/inventory/hosts.yml`
-- Role: `./<project-id>/ansible-project/roles/nginx_multisite/`
-- Playbook: `./<project-id>/ansible-project/run_nginx_multisite.yml`
+This generates a complete Ansible project under `ansible/` using ansible-creator, with roles in `ansible/collections/ansible_collections/x2a/project/roles/`. Publish this project directly; no separate assembly step is needed. When AAP env vars are set, migrate also searches Private Automation Hub for reusable collections.
 
 ## Publish to AAP (Optional)
 
@@ -104,4 +87,4 @@ podman run --rm -ti \
   publish-aap --target-repo https://github.com/companyName/my-migration-project.git --target-branch main --project-id my-migration-project
 ```
 
-This creates or updates an AAP Project pointing to the given repository and branch, then triggers a project sync.
+Commit and push the complete generated `ansible/` project to your Git repository first, preserving its layout. This command creates or updates an AAP Project pointing to that repository and branch, then requests a project sync without waiting for completion. It does not copy local files, push Git commits, or configure Molecule, execution environments, inventories, or job templates.

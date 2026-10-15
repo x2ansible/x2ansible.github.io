@@ -37,19 +37,11 @@ export LLM_MODEL=bedrock/global.anthropic.claude-sonnet-4-5-20250929-v1:0
 export AWS_REGION=your-aws-region
 export AWS_BEARER_TOKEN_BEDROCK=your-bearer-token
 
-# For AAP Collection Discovery during migrate (optional)
-# When set, migrate will search Private Hub for reusable collections
-# See: /concepts/export-agents#aap-discovery-agent-optional
+# Optional: AAP Collection Discovery during migrate and publish-aap sync
 export AAP_CONTROLLER_URL=your-aap-url
 export AAP_ORG_NAME=your-org-name
-export AAP_OAUTH_TOKEN=your-oauth-token
+export AAP_OAUTH_TOKEN=your-oauth-token  # or use AAP_USERNAME and AAP_PASSWORD
 export AAP_GALAXY_REPOSITORY=published  # published, staging, or community
-
-# For publish-aap command (optional)
-export AAP_CONTROLLER_URL=your-aap-url
-
-# For AAP Authentication
-export AAP_OAUTH_TOKEN=your-oauth-token  # or export AAP_USERNAME=your-username and export AAP_PASSWORD=your-password
 
 # AAP integration extra configuration (optional)
 export AAP_CA_BUNDLE=your-ca-bundle-path
@@ -92,22 +84,7 @@ uv run app.py migrate \
 
 ```
 
-This will generate real Ansible code, primarily in `ansible/roles/nginx_multisite` with all details. When AAP env vars are set, it will also search your Private Automation Hub for reusable collections (see [AAP Discovery Agent]({% link latest/phases/migrate.md %})).
-
-## Publish Project
-
-```bash
-uv run app.py publish-project my-migration-project nginx_multisite
-
-```
-
-This creates (or appends to) an Ansible project under `<project-id>/ansible-project/`. On the first module it creates the full skeleton (ansible.cfg, collections, inventory). On subsequent modules it adds the role and playbook.
-
-- ansible.cfg: `./<project-id>/ansible-project/ansible.cfg`
-- Collections requirements: `./<project-id>/ansible-project/collections/requirements.yml`
-- Inventory: `./<project-id>/ansible-project/inventory/hosts.yml`
-- Role: `./<project-id>/ansible-project/roles/nginx_multisite/`
-- Playbook: `./<project-id>/ansible-project/run_nginx_multisite.yml`
+This generates a complete Ansible project under `ansible/` using ansible-creator, with roles in `ansible/collections/ansible_collections/x2a/project/roles/`. Publish this project directly; no separate assembly step is needed. When AAP env vars are set, migrate also searches Private Automation Hub for reusable collections.
 
 ## Publish to AAP (Optional)
 
@@ -119,13 +96,14 @@ uv run app.py publish-aap \
 
 ```
 
-This creates or updates an AAP Project pointing to the given repository and branch, then triggers a project sync.
+Commit and push the complete generated `ansible/` project to your Git repository first, preserving its layout. This command creates or updates an AAP Project pointing to that repository and branch, then requests a project sync without waiting for completion. It does not copy local files, push Git commits, or configure Molecule, execution environments, inventories, or job templates.
 
 ## Notes
 
-Publishing is now split into two separate commands:
+The migrate step already creates the Ansible project. Commit and push that project, then optionally run **`publish-aap`** to register it with AAP and request a sync. Check the sync job's final status in AAP.
 
-- **`publish-project`** creates the local Ansible project structure. Run it once per migrated module.
-- **`publish-aap`** syncs a git repository to AAP. Run it after pushing your project to a git repository.
+`--project-id` identifies the migration for AAP naming; it is not a local path or a repository subdirectory selector. `AAP_PROJECT_NAME`, when set, overrides the AAP project name.
 
-To **skip the AAP sync**, simply omit the `publish-aap` step. The `publish-project` command is always local-only.
+Molecule scenarios remain part of the generated project and are run separately by developers or CI, not by publishing.
+
+To **skip the AAP sync**, simply omit the `publish-aap` step.
