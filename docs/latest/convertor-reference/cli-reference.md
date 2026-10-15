@@ -41,7 +41,6 @@ Commands:
   init             Initialize project with interactive message
   migrate          Migrate project based on migration plan from analysis
   publish-aap      Sync a git repository to Ansible Automation Platform.
-  publish-project  Create or append to an Ansible project for a migrated...
   report           Report execution artifacts to the x2a API
 ```
 
@@ -232,7 +231,8 @@ Options:
 Sync a git repository to Ansible Automation Platform.
 
 Creates or updates an AAP Project pointing to the given repository URL
-and branch, then triggers a project sync.
+and branch, then triggers a project sync without waiting for completion.
+Push the generated Ansible project to the repository before running this command.
 
 Requires AAP environment variables to be configured
 (AAP_CONTROLLER_URL, AAP_ORG_NAME, and authentication credentials).
@@ -253,10 +253,7 @@ uv run app.py publish-aap [OPTIONS]
   Git branch for the AAP project.
 
 - `--project-id` **[required]** (default: Sentinel.UNSET)
-  Migration project ID, used for AAP project naming and subdirectory reference.
-
-- `--molecule-roles` (default: Sentinel.UNSET)
-  Role names that have molecule tests (repeatable). Used to create run-ready job templates on AAP.
+  Migration project ID, used for AAP project naming.
 
 ### Full Help
 
@@ -266,86 +263,19 @@ Usage: publish-aap [OPTIONS]
   Sync a git repository to Ansible Automation Platform.
 
   Creates or updates an AAP Project pointing to the given repository URL and
-  branch, then triggers a project sync.
+  branch, then triggers a project sync without waiting for completion. Push
+  the generated Ansible project to the repository before running this command.
 
   Requires AAP environment variables to be configured (AAP_CONTROLLER_URL,
   AAP_ORG_NAME, and authentication credentials).
 
 Options:
-  --target-repo TEXT     Git repository URL for the AAP project (e.g.,
-                         https://github.com/org/repo.git).  [required]
-  --target-branch TEXT   Git branch for the AAP project.  [required]
-  --project-id TEXT      Migration project ID, used for AAP project naming and
-                         subdirectory reference.  [required]
-  --molecule-roles TEXT  Role names that have molecule tests (repeatable).
-                         Used to create run-ready job templates on AAP.
-  --help                 Show this message and exit.
-```
-
-## publish-project
-
-Create or append to an Ansible project for a migrated module.
-
-PROJECT_ID is the migration project ID.
-MODULE_NAME is the module/role to add.
-
-On the first module, creates the full skeleton (ansible.cfg, collections,
-inventory). On subsequent modules, appends the role and playbook.
-
-A README.md is generated on every invocation, listing all roles in the
-project with their descriptions, default variables, playbook commands, and
-required collections.
-
-Role names are sanitized to comply with Ansible standards: hyphens are
-replaced with underscores (e.g., fastapi-tutorial becomes fastapi_tutorial).
-
-
-### Usage
-
-```bash
-uv run app.py publish-project [OPTIONS] PROJECT_ID MODULE_NAME
-```
-
-### Arguments
-
-- `PROJECT_ID`
-- `MODULE_NAME`
-
-### Options
-
-- `--collections-file` (default: Sentinel.UNSET)
-  Path to YAML/JSON file containing collections list. Format: [{"name": "collection.name", "version": "1.0.0"}]
-
-- `--inventory-file` (default: Sentinel.UNSET)
-  Path to YAML/JSON file containing inventory structure. Format: {"all": {"children": {...}}}
-
-### Full Help
-
-```
-Usage: publish-project [OPTIONS] PROJECT_ID MODULE_NAME
-
-  Create or append to an Ansible project for a migrated module.
-
-  PROJECT_ID is the migration project ID. MODULE_NAME is the module/role to
-  add.
-
-  On the first module, creates the full skeleton (ansible.cfg, collections,
-  inventory). On subsequent modules, appends the role and playbook.
-
-  A README.md is generated on every invocation, listing all roles in the
-  project with their descriptions, default variables, playbook commands, and
-  required collections.
-
-  Role names are sanitized to comply with Ansible standards: hyphens are
-  replaced with underscores (e.g., fastapi-tutorial becomes fastapi_tutorial).
-
-Options:
-  --collections-file FILE  Path to YAML/JSON file containing collections list.
-                           Format: [{"name": "collection.name", "version":
-                           "1.0.0"}]
-  --inventory-file FILE    Path to YAML/JSON file containing inventory
-                           structure. Format: {"all": {"children": {...}}}
-  --help                   Show this message and exit.
+  --target-repo TEXT    Git repository URL for the AAP project (e.g.,
+                        https://github.com/org/repo.git).  [required]
+  --target-branch TEXT  Git branch for the AAP project.  [required]
+  --project-id TEXT     Migration project ID, used for AAP project naming.
+                        [required]
+  --help                Show this message and exit.
 ```
 
 ## report
