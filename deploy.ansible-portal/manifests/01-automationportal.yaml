@@ -1,0 +1,76 @@
+# The AutomationPortal custom resource — the heart of Path 1.
+#
+# The Automation Portal operator OWNS and REGENERATES the RHDH `Backstage` CR and the
+# `portal-app-config` / `portal-dynamic-plugins` ConfigMaps on every reconcile. You must
+# NOT hand-edit those. X2A is layered on via the operator's reconcile-safe merge fields:
+#
+#   spec.plugins.customPluginsRef    -> x2a-dynamic-plugins ConfigMap (merged into the base plugins)
+#   spec.plugins.customAppConfigRef  -> app-config-x2a ConfigMap (loaded LAST; scalars win, objects deep-merge)
+#   spec.backstage.caCertificates    -> secret with ca-bundle.crt; operator injects NODE_EXTRA_CA_CERTS
+#   spec.plugins.catalog.additionalTemplateURLs -> extra Template URLs appended to catalog.locations
+#
+# See README.md for the full explanation of each.
+# AAP 2.7 CR reference: install-automation_portal_operator_configuration_reference
+#   https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/install-automation_portal_operator_configuration_reference
+apiVersion: automationportal.aap.redhat.com/v1alpha1
+kind: AutomationPortal
+metadata:
+  name: portal
+  namespace: automation-portal
+spec:
+  # ---------------------------------------------------------------------------
+  # aap is schema-REQUIRED. Phase 1 runs WITHOUT a real AAP: point it at a
+  # placeholder secret (unreachable host). The operator validates the secret's
+  # shape, not the host's reachability, so it still reconciles to Ready.
+  # In Phase 2 (real AAP + native rhaap sign-in) replace this with real values.
+  # ---------------------------------------------------------------------------
+  aap:
+    checkSSL: false
+    credentials:
+      secretRef: secrets-rhaap-portal
+  auth:
+    providers:
+      # GitHub OAuth is the Phase-1 sign-in. The operator maps the secret's
+      # client-id/client-secret to env and adds auth.providers.github.production
+      # to the generated config. NOTE: it also hardwires auth.signInPage: rhaap —
+      # app-config-x2a overrides that to `github` (see 03-app-config-x2a).
+      github:
+        enabled: true
+        credentials:
+          secretRef: x2a-github-oauth
+      gitlab:
+        enabled: false
+  plugins:
+    registry: registry.redhat.io
+    customPluginsRef: x2a-dynamic-plugins
+    customAppConfigRef: app-config-x2a
+    catalog:
+      enabled: true
+      syncInterval: 60
+      jobTemplates:
+        enabled: true
+      collections:
+        enabled: false
+      gitContents:
+        enabled: false
+      # Append the X2A "Infrastructure Conversion Project" template to the catalog.
+      # Use the RAW url (not github.com/blob): with no github integration configured,
+      # a github.com/blob URL is fetched as HTML and fails to parse. raw.githubusercontent.com
+      # is in backend.reading.allow by default and returns parseable YAML.
+      additionalTemplateURLs:
+        - https://raw.githubusercontent.com/redhat-developer/rhdh-plugins/main/workspaces/x2a/plugins/scaffolder-backend-module-x2a/templates/conversion-project-template.yaml
+  backstage:
+    replicas: 1
+    # Trust the in-cluster API server CA so X2A's kube connection test passes.
+    # The secret carries key ca-bundle.crt; the operator mounts it and sets
+    # NODE_EXTRA_CA_CERTS. scripts/deploy.sh builds this secret from the cluster.
+    caCertificates:
+      secretRef: x2a-ca-bundle
+  permissions: 
+    adminUsers:
+      # Default admin user by portal operator
+      - user:default/admin
+    superUsers:
+      - user:default/admin
+  branding:
+    title: "Ansible automation portal"
