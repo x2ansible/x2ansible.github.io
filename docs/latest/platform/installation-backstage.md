@@ -40,7 +40,7 @@ Published packages (verify versions before pinning in production):
 
 - [@red-hat-developer-hub/backstage-plugin-x2a](https://www.npmjs.com/package/@red-hat-developer-hub/backstage-plugin-x2a) - frontend UI and scaffolder field extension exports.
 - [@red-hat-developer-hub/backstage-plugin-x2a-backend](https://www.npmjs.com/package/@red-hat-developer-hub/backstage-plugin-x2a-backend) - backend API and job orchestration ([install instructions in source README](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/plugins/x2a-backend/README.md)).
-- [@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module](https://www.npmjs.com/package/@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module) - scaffolder module and bundled conversion template.
+- [@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module](https://www.npmjs.com/package/@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module) - scaffolder module with bundled project-creation and AAP Config-as-Code publication templates.
 
 ### Optional components
 
@@ -158,6 +158,10 @@ catalog:
       target: ../../node_modules/@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module/templates/conversion-project-template.yaml
       rules:
         - allow: [Template]
+    - type: file
+      target: ../../node_modules/@red-hat-developer-hub/backstage-plugin-x2a-scaffolder-module/templates/x2a-publish-aap-config-template.yaml
+      rules:
+        - allow: [Template]
 ```
 
 CSV-driven bulk flows and the `RepoAuthentication` extension are described in [CSV Bulk Import]({% link latest/platform/csv-bulk-import.md %}).
@@ -180,7 +184,7 @@ yarn start
 ```
 
 Open `http://localhost:3000/x2a` for the Conversion Hub.
-In the catalog, confirm the **conversion project** template appears (might take some time to load after start-up).
+In the catalog, confirm the **conversion project** and **Publish AAP configuration** templates appear (they might take some time to load after start-up).
 
 ## API exploration
 

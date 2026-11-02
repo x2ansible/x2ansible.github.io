@@ -64,12 +64,19 @@ uv run app.py publish-project my-project nginx_multisite \
 uv run app.py publish-aap \
   --target-repo https://github.com/org/my-project.git \
   --target-branch main \
-  --project-id my-project
+  --project-id my-project \
+  --module-name example_module
 ```
 
 ## Platform Usage
 
 In the web interface, the Publish phase handles both steps: it creates the project structure, pushes to the target repository, and syncs to AAP if credentials are configured.
+
+When generated AAP configuration is available, the module page can open the **Publish AAP configuration** software template. The template collects the required inventory and destination repository, finalizes the generated files, and commits them under:
+
+```
+<configuration-root>/<stable-project-directory>/<module>/
+```
 
 ## Review Checklist
 
@@ -77,6 +84,7 @@ In the web interface, the Publish phase handles both steps: it creates the proje
 - Playbook references the correct role
 - `collections/requirements.yml` lists required collections
 - `inventory/hosts.yml` contains intended hosts
+- Generated AAP configuration is committed to the intended configuration repository
 - AAP Project syncs successfully (if using AAP)
 
 ## Key Properties

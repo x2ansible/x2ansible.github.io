@@ -234,6 +234,11 @@ data:
           target: /opt/app-root/src/dynamic-plugins-root/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module/templates/conversion-project-template.yaml
           rules:
             - allow: [Template]
+        # x2a Publish AAP Config-as-Code template
+        - type: file
+          target: /opt/app-root/src/dynamic-plugins-root/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module/templates/x2a-publish-aap-config-template.yaml
+          rules:
+            - allow: [Template]
         # CUSTOMIZATION: Remove or update per your organization and identity provider configured above
         #- type: url
         #  target: https://raw.githubusercontent.com/[your-org]/org.yaml
