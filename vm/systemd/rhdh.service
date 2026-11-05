@@ -1,0 +1,20 @@
+[Unit]
+Description=Install RHDH and X2A with Helm
+Requires=kind.service
+# write_files runs in cloud-config, not cloud-final (which may wait for multi-user).
+After=kind.service cloud-config.service
+
+[Service]
+Type=oneshot
+StateDirectory=rhdh
+CacheDirectory=rhdh
+UMask=0077
+Environment=HELM_CACHE_HOME=/var/cache/rhdh
+Environment=HELM_CONFIG_HOME=/var/lib/rhdh/config
+Environment=HELM_DATA_HOME=/var/lib/rhdh/data
+ExecStart=/opt/x2a/install.sh
+RemainAfterExit=yes
+TimeoutStartSec=30min
+
+[Install]
+WantedBy=multi-user.target

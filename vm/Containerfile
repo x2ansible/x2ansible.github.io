@@ -1,0 +1,47 @@
+FROM quay.io/fedora/fedora-bootc:44
+
+RUN dnf install -y \
+    cloud-init \
+    curl \
+    jq \
+    nginx \
+    openssl \
+    firewalld \
+    policycoreutils \
+    libselinux-utils \
+    podman \
+    kind \
+    kubernetes-client \
+    helm \
+    iptables \
+    openssh-server \
+    openssh-clients \
+    && dnf clean all
+
+# Bundle the reusable chart and its locked dependency; no chart download at boot.
+COPY charts/x2a /usr/share/x2a/chart
+RUN export HELM_CACHE_HOME=/tmp/helm/cache \
+    HELM_CONFIG_HOME=/tmp/helm/config \
+    HELM_DATA_HOME=/tmp/helm/data && \
+    helm repo add rhdh https://redhat-developer.github.io/rhdh-chart && \
+    helm dependency build /usr/share/x2a/chart && \
+    rm -rf /tmp/helm
+
+COPY x2a/status.sh x2a/install.sh /opt/x2a/
+COPY x2a/nginx.conf /etc/nginx/x2a.conf
+COPY systemd/x2a-https.service systemd/x2a-port-forward.service systemd/x2a-selinux.service /usr/lib/systemd/system/
+COPY systemd/rhdh.service /usr/lib/systemd/system/
+COPY kind.yaml /etc/kind/kind.yaml
+COPY systemd/kind-storage.service systemd/kind-create.service systemd/kind.service /usr/lib/systemd/system/
+
+RUN chmod 0755 /opt/x2a/install.sh /opt/x2a/status.sh && \
+    mkdir -p /usr/lib/systemd/system/default.target.wants && \
+    ln -sf ../cloud-init.target /usr/lib/systemd/system/default.target.wants/cloud-init.target && \
+    for unit in cloud-init-local.service cloud-init.service cloud-init-network.service cloud-config.service cloud-final.service; do \
+        if [ -f /usr/lib/systemd/system/$unit ]; then systemctl enable "$unit" || exit 1; fi; \
+    done && \
+    firewall-offline-cmd --add-service=ssh && \
+    firewall-offline-cmd --add-service=https && \
+    systemctl disable nginx.service && \
+    systemctl enable sshd.service firewalld.service kind.service rhdh.service x2a-port-forward.service x2a-https.service && \
+    bootc container lint

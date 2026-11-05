@@ -1,0 +1,18 @@
+[Unit]
+Description=Create the kind cluster on first boot
+Wants=network-online.target firewalld.service
+Requires=kind-storage.service
+After=network-online.target kind-storage.service firewalld.service
+RequiresMountsFor=/var/lib/containers /var/lib/kind
+ConditionPathExists=!/var/lib/kind/initialized
+
+[Service]
+Type=oneshot
+StateDirectory=kind
+UMask=0077
+Environment=KIND_EXPERIMENTAL_PROVIDER=podman
+Environment=KUBECONFIG=/var/lib/kind/kubeconfig
+ExecStart=/usr/bin/kind create cluster --name kind --config /etc/kind/kind.yaml --wait 180s
+ExecStartPost=/usr/bin/touch /var/lib/kind/initialized
+RemainAfterExit=yes
+TimeoutStartSec=15min

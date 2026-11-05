@@ -1,0 +1,13 @@
+[Unit]
+Description=Forward local port to RHDH service
+Requires=kind.service
+After=kind.service
+
+[Service]
+Environment=KUBECONFIG=/var/lib/kind/kubeconfig
+ExecStart=/usr/bin/kubectl -n rhdh port-forward --address 127.0.0.1 svc/rhdh-developer-hub 7007:7007
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

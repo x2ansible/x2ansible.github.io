@@ -1,0 +1,20 @@
+[Unit]
+Description=Start the kind Kubernetes cluster
+Requires=kind-create.service
+After=kind-create.service
+RequiresMountsFor=/var/lib/containers /var/lib/kind
+
+[Service]
+Type=oneshot
+StateDirectory=kind
+UMask=0077
+Environment=KIND_EXPERIMENTAL_PROVIDER=podman
+Environment=KUBECONFIG=/var/lib/kind/kubeconfig
+ExecStart=/usr/bin/podman start kind-control-plane
+ExecStart=/usr/bin/kind export kubeconfig --name kind --kubeconfig /var/lib/kind/kubeconfig
+ExecStart=/usr/bin/kubectl wait --for=condition=Ready nodes --all --timeout=180s
+RemainAfterExit=yes
+TimeoutStartSec=5min
+
+[Install]
+WantedBy=multi-user.target

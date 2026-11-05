@@ -1,0 +1,99 @@
+# Runtime settings only. Edit application YAML and plugins in templates/.
+global:
+  x2a:
+    publicUrl: https://localhost:8443
+rbac:
+  serviceAccountName: default
+  defaultNamespacePodList: true
+rhdh:
+  route:
+    enabled: false
+  global:
+    lightspeed:
+      enabled: false
+  upstream:
+    ingress:
+      enabled: false
+    backstage:
+      image:
+        registry: quay.io
+        repository: rhdh-community/rhdh
+        tag: next-1.10
+      extraAppConfig:
+      - configMapRef: x2a-app-config
+        filename: app-config.x2a.yaml
+      extraEnvVarsSecrets:
+      - x2a-llm
+      - x2a-aap
+      extraEnvVars:
+      - name: AUTH_GITHUB_CLIENT_ID
+        valueFrom:
+          secretKeyRef: {name: x2a-auth, key: AUTH_GITHUB_CLIENT_ID, optional: true}
+      - name: AUTH_GITHUB_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef: {name: x2a-auth, key: AUTH_GITHUB_CLIENT_SECRET, optional: true}
+      - name: AUTH_GITLAB_CLIENT_ID
+        valueFrom:
+          secretKeyRef: {name: x2a-auth, key: AUTH_GITLAB_CLIENT_ID, optional: true}
+      - name: AUTH_GITLAB_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef: {name: x2a-auth, key: AUTH_GITLAB_CLIENT_SECRET, optional: true}
+      - name: AUTH_BITBUCKET_CLIENT_ID
+        valueFrom:
+          secretKeyRef: {name: x2a-auth, key: AUTH_BITBUCKET_CLIENT_ID, optional: true}
+      - name: AUTH_BITBUCKET_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef: {name: x2a-auth, key: AUTH_BITBUCKET_CLIENT_SECRET, optional: true}
+      - name: NODE_EXTRA_CA_CERTS
+        value: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      - name: BACKEND_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: '{{ .Release.Name }}-auth'
+            key: backend-secret
+      - name: POSTGRESQL_ADMIN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: '{{ .Release.Name }}-postgresql'
+            key: postgres-password
+      # Disable the dependency config so it cannot override app_config.yaml.
+      appConfig: ""
+      extraVolumes:
+      - name: dynamic-plugins-root
+        ephemeral:
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 5Gi
+      - name: dynamic-plugins
+        configMap:
+          defaultMode: 420
+          name: x2a-dynamic-plugins
+          optional: false
+      - name: dynamic-plugins-npmrc
+        secret:
+          defaultMode: 420
+          optional: true
+          secretName: '{{ printf "%s-dynamic-plugins-npmrc" .Release.Name }}'
+      - name: dynamic-plugins-registry-auth
+        secret:
+          defaultMode: 416
+          optional: true
+          secretName: '{{ printf "%s-dynamic-plugins-registry-auth" .Release.Name }}'
+      - name: npmcacache
+        emptyDir: {}
+      - name: extensions-catalog
+        emptyDir: {}
+      - name: temp
+        emptyDir: {}
+    postgresql:
+      image:
+        registry: quay.io
+        repository: fedora/postgresql-16
+        tag: latest
+      primary:
+        persistence:
+          storageClass: ''

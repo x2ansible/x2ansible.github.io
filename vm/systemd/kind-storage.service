@@ -1,0 +1,10 @@
+[Unit]
+Description=Increase ephemeral VM storage space for kind
+Before=kind-create.service kind.service
+
+[Service]
+Type=oneshot
+ExecCondition=/usr/bin/findmnt --noheadings --mountpoint /var --types tmpfs
+# systemd escapes a literal percent sign as %%.
+ExecStart=/usr/bin/mount -o remount,size=75%% /var
+RemainAfterExit=yes

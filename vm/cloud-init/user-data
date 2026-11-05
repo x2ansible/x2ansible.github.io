@@ -1,0 +1,26 @@
+#cloud-config
+# Dummy development credentials only. Never serve real secrets over HTTP.
+write_files:
+  - path: /etc/x2a/llm.env
+    owner: root:root
+    permissions: '0600'
+    content: |
+      LLM_MODEL=bedrock/anthropic.claude-v2
+      AWS_REGION=eu-west-2
+      AWS_BEARER_TOKEN_BEDROCK=dummy-not-a-real-bedrock-token
+      MAX_TOKENS=32000
+
+  - path: /etc/x2a/aap.env
+    owner: root:root
+    permissions: '0600'
+    content: |
+      AAP_CONTROLLER_URL=https://aap.example.invalid
+      AAP_ORG_NAME=Demo Organization
+      AAP_OAUTH_TOKEN=dummy-not-a-real-aap-token
+
+  - path: /etc/x2a/auth.env
+    owner: root:root
+    permissions: '0600'
+    content: |
+      AUTH_GITHUB_CLIENT_ID=dummy-github-client-id
+      AUTH_GITHUB_CLIENT_SECRET=dummy-not-a-real-github-secret

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: x2a
+description: Community RHDH with X2A conversion plugins (development)
+type: application
+version: 0.1.0
+dependencies:
+  - name: backstage
+    alias: rhdh
+    version: 5.12.13
+    repository: https://redhat-developer.github.io/rhdh-chart
