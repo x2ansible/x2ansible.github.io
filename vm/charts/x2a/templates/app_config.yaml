@@ -1,0 +1,118 @@
+{{- $settings := .Values.global.x2a -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: x2a-app-config
+  namespace: {{ .Release.Namespace }}
+data:
+  app-config.x2a.yaml: |
+    app:
+      baseUrl: {{ $settings.publicUrl | quote }}
+    backend:
+      baseUrl: {{ $settings.publicUrl | quote }}
+      cors:
+        origin: {{ $settings.publicUrl | quote }}
+        credentials: true
+      database:
+        connection:
+          password: ${POSTGRESQL_ADMIN_PASSWORD}
+          user: postgres
+      auth:
+        externalAccess:
+          - type: legacy
+            options:
+              subject: legacy-default-config
+              secret: ${BACKEND_SECRET}
+      actions:
+        pluginSources: [x2a-mcp-extras]
+      reading:
+        allow:
+          - host: raw.githubusercontent.com
+    mcpActions:
+      namespacedToolNames: false
+    integrations:
+      github:
+        - host: github.com
+    auth:
+      experimentalDynamicClientRegistration:
+        enabled: true
+        allowedRedirectUriPatterns:
+          - "cursor://*"
+          - "http://localhost:*"
+          - "https://*"
+      environment: development
+      providers:
+        {{- $authn := lookup "v1" "Secret" .Release.Namespace "x2a-auth" }}
+        {{- $providers := list }}
+        {{- with $authn.data }}
+        {{- if hasKey . "AUTH_GITHUB_CLIENT_ID" }}
+        {{- $providers = append $providers "github" }}
+        github:
+          development:
+            clientId: ${AUTH_GITHUB_CLIENT_ID}
+            clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+            signIn:
+              resolvers:
+                - resolver: usernameMatchingUserEntityName
+                  dangerouslyAllowSignInWithoutUserInCatalog: true
+        {{- end }}
+        {{- if hasKey . "AUTH_GITLAB_CLIENT_ID" }}
+        {{- $providers = append $providers "gitlab" }}
+        gitlab:
+          development:
+            clientId: ${AUTH_GITLAB_CLIENT_ID}
+            clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
+            signIn:
+              resolvers:
+                - resolver: usernameMatchingUserEntityName
+                  dangerouslyAllowSignInWithoutUserInCatalog: true
+        {{- end }}
+        {{- if hasKey . "AUTH_BITBUCKET_CLIENT_ID" }}
+        {{- $providers = append $providers "bitbucket" }}
+        bitbucket:
+          development:
+            clientId: ${AUTH_BITBUCKET_CLIENT_ID}
+            clientSecret: ${AUTH_BITBUCKET_CLIENT_SECRET}
+            signIn:
+              resolvers:
+                - resolver: usernameMatchingUserEntityAnnotation
+                  dangerouslyAllowSignInWithoutUserInCatalog: true
+        {{- end }}
+        {{- end }}
+    signInPage: {{ if $providers }}{{ $providers | toJson }}{{ else }}null{{ end }}
+    dynamicPlugins:
+      frontend:
+        backstage.plugin-auth:
+          dynamicRoutes:
+            - path: /oauth2/*
+              importName: Router
+    catalog:
+      locations:
+        - type: file
+          target: /opt/app-root/src/dynamic-plugins-root/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module/templates/conversion-project-template.yaml
+          rules:
+            - allow: [Template]
+    x2a:
+      callbackBaseUrl: "http://{{ .Release.Name }}-developer-hub.{{ .Release.Namespace }}.svc.cluster.local:7007/api/x2a"
+      kubernetes:
+        image: quay.io/x2ansible/x2a-convertor
+        imageTag: latest
+        ttlSecondsAfterFinished: 86400
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+      credentials:
+        aap:
+          url: ${AAP_CONTROLLER_URL}
+          orgName: ${AAP_ORG_NAME}
+          oauthToken: ${AAP_OAUTH_TOKEN}
+          skipSSLVerification: false
+        llm:
+          {{- $llm := lookup "v1" "Secret" .Release.Namespace "x2a-llm" }}
+          {{- range $key, $_ := $llm.data }}
+          {{ $key }}: {{ printf "${%s}" $key | quote }}
+          {{- end }}

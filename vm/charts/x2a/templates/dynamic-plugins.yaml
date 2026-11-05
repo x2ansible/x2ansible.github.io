@@ -1,0 +1,38 @@
+# This ConfigMap, not values.yaml, owns the dynamic plugin configuration.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: x2a-dynamic-plugins
+  namespace: {{ .Release.Namespace }}
+data:
+  dynamic-plugins.yaml: |
+    includes:
+    - dynamic-plugins.default.yaml
+    plugins:
+    - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-plugin-auth:bs_1.49.4__0.1.6
+    - package: oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/backstage-plugin-mcp-actions-backend:pr_2236__0.1.11
+    - package: ./dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic
+      disabled: false
+    - package: oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a:nightly!red-hat-developer-hub-backstage-plugin-x2a
+      pluginConfig:
+        dynamicPlugins:
+          frontend:
+            red-hat-developer-hub.backstage-plugin-x2a:
+              scaffolderFieldExtensions:
+              - importName: RepoAuthenticationExtension
+              - importName: RulesAcceptanceExtension
+              translationResources:
+              - importName: x2aPluginTranslations
+                ref: x2aPluginTranslationRef
+              appIcons:
+              - name: x2aIcon
+                importName: X2AIcon
+              dynamicRoutes:
+              - path: /x2a
+                importName: X2APage
+                menuItem:
+                  icon: x2aIcon
+                  text: X2A
+    - package: oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-backend:nightly!red-hat-developer-hub-backstage-plugin-x2a-backend
+    - package: oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:nightly!red-hat-developer-hub-backstage-plugin-x2a-mcp-extras
+    - package: oci://quay.io/x2ansible/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module:nightly!red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module

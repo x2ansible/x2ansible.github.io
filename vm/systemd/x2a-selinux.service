@@ -1,0 +1,9 @@
+[Unit]
+Description=Allow nginx to connect to the RHDH port forward
+ConditionSecurity=selinux
+Before=x2a-https.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/setsebool httpd_can_network_connect on
+RemainAfterExit=yes

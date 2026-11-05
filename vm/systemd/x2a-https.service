@@ -1,0 +1,16 @@
+[Unit]
+Description=Development HTTPS proxy for RHDH
+Requires=x2a-selinux.service
+After=network.target x2a-selinux.service
+
+[Service]
+Type=simple
+LogsDirectory=nginx
+ExecStartPre=/opt/x2a/install.sh --tls-only
+ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/x2a.conf
+ExecStart=/usr/sbin/nginx -c /etc/nginx/x2a.conf -g 'daemon off;'
+ExecReload=/usr/sbin/nginx -s reload -c /etc/nginx/x2a.conf
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

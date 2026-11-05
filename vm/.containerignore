@@ -1,0 +1,8 @@
+vm-old/
+.git/
+work/
+tmp/
+cloud-init/
+charts/x2a/envs/
+tests/
+AGENTS.md
