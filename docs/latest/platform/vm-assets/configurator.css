@@ -1,0 +1,145 @@
+.main-content ul.tab {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem;
+  margin: 1rem 0 0;
+  padding: .4rem .4rem 0;
+  border-bottom: 1px solid #8885;
+  list-style: none;
+}
+.main-content ul.tab > li,
+.main-content ul.tab-content > li { padding-left: 0; list-style: none; }
+.main-content ul.tab > li::before,
+.main-content ul.tab-content > li::before { display: none; content: none; }
+.tab > li { margin: 0; }
+.tab > li > a {
+  display: block;
+  padding: .65rem 1rem;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  color: inherit;
+  text-decoration: none;
+}
+.tab > li.active > a {
+  border-color: #8885;
+  background: Canvas;
+  font-weight: 600;
+}
+.tab > li > a:focus-visible {
+  outline: 2px solid #6244c5;
+  outline-offset: -2px;
+}
+.main-content ul.tab-content {
+  margin: 0 0 2rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #8885;
+  border-top: 0;
+  list-style: none;
+}
+.tab-content > li { margin: 0; }
+.tab-content > li + li { margin-top: 1.5rem; }
+.tab-content.tabs-enhanced > li { display: none; margin-top: 0; }
+.tab-content.tabs-enhanced > li.active { display: block; }
+.tab-content > li[hidden] { display: none !important; }
+.tab-content > li > :first-child { margin-top: 0; }
+.tab-content > li > :last-child { margin-bottom: 0; }
+@media (max-width: 640px) {
+  .tab > li { flex: 1; text-align: center; }
+  .tab-content { padding: .9rem; }
+}
+
+.vm-configurator {
+  --vm-accent: #6244c5;
+  --vm-border: #8885;
+  --vm-tint: #88888808;
+  margin: 1.5rem 0 2rem;
+}
+.vm-configurator *, .vm-configurator *::before, .vm-configurator *::after { box-sizing: border-box; }
+.vm-configurator .config-card {
+  min-width: 0;
+  margin: 0 0 1.5rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  border: 1px solid var(--vm-border);
+  border-radius: 12px;
+  background: var(--vm-tint);
+}
+.vm-configurator legend { width: auto; padding: 0 .5rem; font-size: 1rem; font-weight: 600; }
+.vm-configurator .step-number {
+  display: inline-grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  margin-right: .4rem;
+  border-radius: 50%;
+  background: var(--vm-accent);
+  color: #fff;
+  font-size: .8rem;
+}
+.vm-configurator .badge {
+  display: inline-block;
+  margin-left: .5rem;
+  padding: .1rem .5rem;
+  border: 1px solid var(--vm-border);
+  border-radius: 20px;
+  font-size: .7rem;
+  font-weight: 400;
+  vertical-align: middle;
+}
+.vm-configurator .card-description { margin: 0 0 1rem; font-size: .9rem; }
+.vm-configurator .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.25rem; }
+.vm-configurator .full-width { grid-column: 1 / -1; }
+.vm-configurator label { display: block; margin: 0; font-size: .875rem; font-weight: 500; }
+.vm-configurator input, .vm-configurator select, .vm-configurator textarea, .vm-configurator button { font: inherit; }
+.vm-configurator input:not([type=checkbox]), .vm-configurator select {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  margin-top: .4rem;
+  padding: .55rem .7rem;
+  border: 1px solid var(--vm-border);
+  border-radius: 6px;
+  background-color: transparent;
+  color: inherit;
+  box-shadow: 0 1px 2px #00000006;
+}
+.vm-configurator input::placeholder { color: inherit; opacity: .55; }
+.vm-configurator input:focus-visible, .vm-configurator select:focus-visible,
+.vm-configurator textarea:focus-visible, .vm-configurator button:focus-visible,
+.vm-configurator summary:focus-visible, .vm-configurator a:focus-visible {
+  outline: 2px solid var(--vm-accent);
+  outline-offset: 3px;
+}
+.vm-configurator .help, .vm-configurator .field-hint { font-size: .8rem; font-weight: 400; }
+.vm-configurator .help { margin: .9rem 0 0; line-height: 1.6; }
+.vm-configurator .field-hint { opacity: .8; }
+.vm-configurator .provider-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.vm-configurator .provider-choice { padding: .9rem; border: 1px solid var(--vm-border); border-radius: 8px; }
+.vm-configurator .provider-choice:has(input:checked) { border-color: var(--vm-accent); background: #6244c510; }
+.vm-configurator .provider-choice label { cursor: pointer; font-weight: 600; }
+.vm-configurator .provider-choice a { display: inline-block; margin-top: .5rem; font-size: .75rem; }
+.vm-configurator input[type=checkbox] { width: 1rem; height: 1rem; margin: 0 .35rem 0 0; vertical-align: -.15rem; accent-color: var(--vm-accent); }
+.vm-configurator #auth-fields fieldset { min-width: 0; margin: 1.25rem 0 0; padding: 1rem; border: 1px solid var(--vm-border); border-radius: 8px; }
+.vm-configurator #auth-fields legend { font-size: .85rem; }
+.vm-configurator summary { cursor: pointer; font-size: .9rem; font-weight: 500; }
+.vm-configurator .integration-details[open] summary { margin-bottom: 1rem; }
+.vm-configurator .integration-details .field-grid { margin: 1rem 0; }
+.vm-configurator .export-card { padding: 1.5rem; border: 1px solid var(--vm-border); border-top: 3px solid var(--vm-accent); border-radius: 10px; }
+.vm-configurator .export-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+.vm-configurator .export-header h3 { margin: 0; font-size: 1rem; }
+.vm-configurator .export-header .help { margin: .4rem 0 0; }
+.vm-configurator .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.vm-configurator button { min-height: 40px; padding: .5rem .9rem; border: 1px solid var(--vm-border); border-radius: 6px; background: transparent; color: inherit; font-size: .8rem; font-weight: 500; cursor: pointer; }
+.vm-configurator button.primary-action { background: var(--vm-accent); color: #fff; border-color: var(--vm-accent); }
+.vm-configurator button:hover:not(:disabled) { filter: brightness(.9); }
+.vm-configurator button:disabled { cursor: not-allowed; opacity: .5; }
+.vm-configurator #vm-config-status { margin: 1rem 0; font-size: .8rem; }
+.vm-configurator .yaml-preview { padding-top: 1rem; border-top: 1px solid var(--vm-border); }
+.vm-configurator textarea { display: block; width: 100%; height: 22rem; margin-top: 1rem; padding: 1rem; border: 1px solid var(--vm-border); border-radius: 6px; background: var(--vm-tint); color: inherit; font: 12px/1.6 ui-monospace, monospace; resize: vertical; }
+.vm-configurator [hidden] { display: none !important; }
+@media (max-width: 640px) {
+  .vm-configurator .config-card, .vm-configurator .export-card { padding: 1rem; }
+  .vm-configurator .field-grid, .vm-configurator .provider-choices { grid-template-columns: 1fr; }
+  .vm-configurator .provider-choice { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; }
+  .vm-configurator .provider-choice a { margin: 0; }
+}

@@ -33,4 +33,16 @@ kubectl -n rhdh create secret generic x2a-llm --from-env-file=/etc/x2a/llm.env
 kubectl -n rhdh create secret generic x2a-aap --from-env-file=/etc/x2a/aap.env
 kubectl -n rhdh create secret generic x2a-auth --from-env-file=/etc/x2a/auth.env
 
+x2a_public_url='https://localhost:443'
+vm_cloud_name=$(cloud-init query v1.cloud_name 2>/dev/null || true)
+if [[ $vm_cloud_name == aws ]]; then
+    vm_public_ipv4=$(cloud-init query ds.meta-data.public-ipv4 2>/dev/null || true)
+    if [[ -n $vm_public_ipv4 && $vm_public_ipv4 != null && $vm_public_ipv4 != None ]]; then
+        x2a_public_url="https://${vm_public_ipv4}"
+    fi
+fi
+# Add provider-specific cloud-init metadata queries here when GCP/Azure support is needed.
+kubectl -n rhdh create secret generic vm-metadata \
+    --from-literal=X2A_PUBLIC_URL="$x2a_public_url"
+
 helm install rhdh /usr/share/x2a/chart --namespace rhdh

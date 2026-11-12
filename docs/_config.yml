@@ -8,6 +8,9 @@ repository: x2ansible/x2ansible
 # Theme
 theme: just-the-docs
 
+plugins:
+  - jekyll-tabs
+
 # Logo and branding
 logo: ""
 favicon_ico: ""
@@ -66,6 +69,9 @@ callouts:
   note:
     title: Note
     color: purple
+  info:
+    title: Info
+    color: blue
   warning:
     title: Warning
     color: red

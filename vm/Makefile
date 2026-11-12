@@ -1,4 +1,14 @@
 IMAGE ?= localhost/kind-vm
+IMAGE_BUILDER ?= ghcr.io/osbuild/image-builder-cli:latest
+EXPORT_TYPE ?= ami
+EXPORT_DIR ?= output
+AWS_IMAGE ?= $(EXPORT_DIR)/image/disk.raw
+AWS_ARCH ?= $(shell uname -m)
+ROOTFUL_PODMAN ?= sudo podman
+ROOTFUL_PODMAN_BUILD_ARGS ?=
+ROOTFUL_CONTAINER_STORAGE ?= /var/lib/containers/storage
+AWS_PROFILE ?= default
+AWS_CONFIG_DIR ?= $(HOME)/.aws
 VM_NAME ?= kind-vm
 CPUS ?= 4
 MEMORY ?= 16G
@@ -26,9 +36,37 @@ render:
 	cp "$$work/render.yaml" render_helm.yaml
 	@echo 'Rendered full manifests to render_helm.yaml'
 
-.PHONY: build run ssh start stop virt-run virt-ssh virt-serve virt-destroy
+.PHONY: build export publish-aws-ami run ssh start stop virt-run virt-ssh virt-serve virt-destroy
 build:
 	podman build -t $(IMAGE) -f Containerfile .
+
+# Export the bootc image as an AMI artifact; image-builder requires rootful Podman.
+export:
+	$(ROOTFUL_PODMAN) build $(ROOTFUL_PODMAN_BUILD_ARGS) -t $(IMAGE) -f Containerfile .
+	mkdir -p $(EXPORT_DIR)/image
+	$(ROOTFUL_PODMAN) run --rm --privileged --pull=newer \
+		--security-opt label=type:unconfined_t \
+		-v $(ROOTFUL_CONTAINER_STORAGE):/var/lib/containers/storage \
+		-v $(CURDIR)/$(EXPORT_DIR):/output \
+		$(IMAGE_BUILDER) build \
+			--bootc-ref $(IMAGE) \
+			--bootc-default-fs $(FILESYSTEM) \
+			--output-dir /output/image \
+			--output-name disk \
+			$(EXPORT_TYPE)
+
+# Upload an existing raw disk as a new AMI; no image build.
+publish-aws-ami:
+	podman run --rm \
+		--security-opt label=disable \
+		-v "$(abspath $(AWS_IMAGE)):/images/disk.raw:ro" \
+		-v "$(AWS_CONFIG_DIR):/root/.aws:ro" \
+		$(IMAGE_BUILDER) upload /images/disk.raw --to aws \
+		--arch "$(AWS_ARCH)" \
+		--aws-profile "$(AWS_PROFILE)" \
+		--aws-ami-name "$(AWS_AMI_NAME)" \
+		--aws-bucket "$(AWS_BUCKET)" \
+		--aws-region "$(AWS_REGION)"
 
 # The short names always refer to the persistent libvirt VM.
 run: virt-run
