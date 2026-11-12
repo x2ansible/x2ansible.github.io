@@ -41,20 +41,24 @@ charts/x2a/templates/dynamic-plugins.yaml
 - Edit full app configuration directly in `app_config.yaml`.
 - Edit plugin configuration directly in `dynamic-plugins.yaml`.
 - Helm expressions belong in these templates, not application config in values.
-- `values.yaml` holds deployment settings such as images, mounts and public URL.
+- `values.yaml` holds deployment settings such as images and mounts.
+- `vm-metadata` exposes `X2A_PUBLIC_URL` to RHDH; app config URL fields use
+  `${X2A_PUBLIC_URL}`. Installer defaults to localhost:443 and currently queries
+  `ds.meta-data.public-ipv4` only when cloud-init reports `aws`.
 - Build dependencies in temporary copies or the image, not the source tree.
 - Do not reintroduce legacy credential migration or app-config overlays.
 
 ## Secrets
 
 Use literal `KEY=value` env files without shell quotes or expansion.
-Create Secrets with native `kubectl create secret generic --from-env-file`.
-The installer is create-only: namespace, three explicit Secret commands, then
-`helm install`. All three `/etc/x2a/{llm,aap,auth}.env` files must exist.
-No loops, existence checks, updates, fallbacks, overrides or rollout restarts.
-Existing resources cause normal command failure, including on later VM boots.
-Deployment settings, including public URL, come from the chart, not environment files.
-Do not generate Secret YAML or parse credentials in Bash.
+Create credential Secrets with native `kubectl create secret generic --from-env-file`.
+The installer is create-only: namespace, three credential Secret commands, then
+`vm-metadata` and `helm install`. All three `/etc/x2a/{llm,aap,auth}.env` files
+must exist. `vm-metadata` contains the URL resolved from cloud-init metadata;
+AWS is currently supported, with GCP/Azure support to be added later. No loops,
+existence checks, updates, Helm overrides
+or rollout restarts. Existing resources cause normal command failure, including
+on later VM boots. Do not generate Secret YAML or parse credential env files in Bash.
 
 ### LLM
 
