@@ -287,16 +287,6 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  # CUSTOMIZATION: Change storage class for your environment
-  # Common values:
-  #   - OpenShift CRC: crc-csi-hostpath-provisioner
-  #   - AWS EBS: gp2 or gp3
-  #   - Azure: managed-premium
-  #   - GCP: standard or standard-rwo
-  # List available storage classes: oc get storageclass
-  # storageClassName: kubevirt-csi-infra-default
-  storageClassName: crc-csi-hostpath-provisioner
-  # storageClassName: hostpath-csi
   resources:
     requests:
       storage: 2Gi
@@ -311,6 +301,11 @@ spec:
       spec:
         template:
           spec:
+            volumes:
+            - $patch: replace
+              name: dynamic-plugins-root
+              persistentVolumeClaim:
+                claimName: dynamic-plugins-root
             serviceAccountName: x2a-sa
             automountServiceAccountToken: true
             containers:
