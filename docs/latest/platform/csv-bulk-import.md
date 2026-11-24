@@ -86,6 +86,9 @@ For Bitbucket, the `project` parameter is organizational metadata and is not par
 
 For self-hosted instances (e.g. GitHub Enterprise, self-hosted GitLab), use the corresponding host in place of the public domain. The host must be listed in the `integrations:` section of `app-config.yaml` so the plugin can detect the correct SCM provider. See [Authentication]({% link latest/platform/authentication.md %}) for provider configuration details.
 
+{: .note }
+Full URLs must use `https://`. No URL may contain credentials (`user@`), backslashes or whitespace; such a row is rejected with an error naming the row and column, before any token is requested. For GitHub and GitLab, a token is only requested for the host set in `x2a.scm.authHosts`, so rows using any other host of that type fail. See [SCM hosts and authHosts]({% link latest/platform/authentication.md %}#scm-hosts-and-authhosts).
+
 ## Repeatable Import
 
 The CSV import is designed to be run repeatedly with the same or an updated file. Projects whose name already exists are **skipped** (not duplicated) and counted as "skipped" in the results summary.

@@ -96,10 +96,10 @@ data:
         disabled: false
 
       # All X2A plugins
-      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a:bs_1.49.4__2.0.0"
-      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-backend:bs_1.49.4__2.0.0"
-      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:bs_1.49.4__1.0.0"
-      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module:bs_1.49.4__2.0.0"
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a:bs_1.49.4__2.1.0"
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-backend:bs_1.49.4__2.1.0"
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-mcp-extras:bs_1.49.4__1.1.0"
+      - package: "oci://ghcr.io/redhat-developer/rhdh-plugin-export-overlays/red-hat-developer-hub-backstage-plugin-x2a-scaffolder-module:bs_1.49.4__2.1.0"
 
 ---
 # ConfigMap: Application Configuration
@@ -146,9 +146,9 @@ data:
         - host: github.com
       # CUSTOMIZE:
       # gitlab:
-      #   - host: gitlab.com
-      #   - host: gitlab.internal.io # Self-hosted GitLab
+      #   - host: gitlab.internal.io # Self-hosted GitLab (or gitlab.com)
       #     apiBaseUrl: https://gitlab.internal.io/api/v4
+      #   # Only one GitLab host can be authenticated: the one in x2a.scm.authHosts.gitlab below.
       # bitbucketCloud:
       #   - host: bitbucket.org
 
@@ -195,6 +195,7 @@ data:
         #   development:
         #     clientId: ${AUTH_GITLAB_CLIENT_ID}
         #     clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
+        #     audience: https://gitlab.com # or your self-hosted GitLab URL
         #     signIn:
         #       resolvers:
         #         - resolver: usernameMatchingUserEntityName
@@ -214,6 +215,9 @@ data:
           scaffolderFieldExtensions:
             - importName: RepoAuthenticationExtension
             - importName: RulesAcceptanceExtension
+            # Replaces the stock RepoUrlPicker in the conversion template. If missing, the
+            # repository fields silently degrade to plain text inputs.
+            - importName: X2ARepoUrlPickerExtension
           translationResources:
             - importName: x2aPluginTranslations
               ref: x2aPluginTranslationRef
@@ -254,6 +258,16 @@ data:
     #        - name: user:default/[your-user]
 
     x2a:
+      scm:
+        # CUSTOMIZE: the ONE host each SCM OAuth provider above is registered against.
+        # Required, no default: a token is only handed to the host named here.
+        #   github: the host of the GitHub (Enterprise) OAuth app (enterpriseInstanceUrl)
+        #   gitlab: the host of auth.providers.gitlab.<env>.audience
+        # Keep in sync with auth.providers; the frontend cannot verify it.
+        # See https://x2ansible.github.io/latest/platform/authentication.html#scm-hosts-and-authhosts
+        authHosts:
+          github: github.com
+          # gitlab: gitlab.internal.io # must match auth.providers.gitlab.<env>.audience
       callbackBaseUrl: http://${SERVICE_NAME}.${NAMESPACE}.svc.cluster.local/api/x2a
       kubernetes:
         image: ${X2A_KUBERNETES_IMAGE:-quay.io/x2ansible/x2a-convertor}
