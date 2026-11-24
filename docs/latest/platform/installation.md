@@ -144,6 +144,9 @@ oc apply -n my-custom-namespace -f deploy/app.yaml
 
 To use different plugin versions, update the OCI image references in the `dynamic-plugins` ConfigMap section of `deploy/app.yaml`. The default manifest also includes the MCP server, X2A MCP extras, and the upstream `@backstage/plugin-auth` DCR consent UI alongside the Conversion Hub plugins.
 
+{: .warning }
+**Upgrading to plugins 2.1.0:** set `x2a.scm.authHosts` (no default; GitHub and GitLab tokens are refused until it is set) and add `X2ARepoUrlPickerExtension` to `scaffolderFieldExtensions`. Both are already in `deploy/app.yaml`; adjust `authHosts` to your auth providers. Repository URLs must now be plain `https://` URLs without credentials, so existing projects stored with `http://`, `user@` or SSH-style URLs fail phase runs. Recreate them with a plain `https://` URL. See [Authentication]({% link latest/platform/authentication.md %}#scm-hosts-and-authhosts).
+
 ## MCP tools
 
 The default [`deploy/app.yaml`]({% link latest/platform/installation.md %}#2-application-deployment) wires up Model Context Protocol (MCP) so assistants can call X2A MCP tools against your RHDH X2A route.

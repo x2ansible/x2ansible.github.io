@@ -61,11 +61,13 @@ auth:
 **Setup**:
 1. Create a GitLab OAuth application at [gitlab.com/-/user_settings/applications](https://gitlab.com/-/user_settings/applications)
 2. Set the redirect URI to `http://localhost:7007/api/auth/gitlab/handler/frame`
-3. Request scopes: `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
+3. Request scopes: `api`, `read_user`, `read_api`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
 4. Copy the Application ID and Secret to environment variables
 
-**Required Scopes** (per [Backstage documentation](https://backstage.io/docs/auth/gitlab/provider/)):
+**Required Scopes** (per [Backstage documentation](https://backstage.io/docs/auth/gitlab/provider/) and the X2Ansible repository picker):
+- `api` (the repository picker's token carries the scopes of the app's `scmAuthApi`, which needs `api`)
 - `read_user`
+- `read_api`
 - `read_repository`
 - `write_repository`
 - `openid`, `profile`, `email`
@@ -99,6 +101,32 @@ auth:
 4. Copy the Key (Client ID) and Secret to environment variables
 
 **Note**: Bitbucket uses `usernameMatchingUserEntityAnnotation` resolver instead of `usernameMatchingUserEntityName`.
+
+## SCM hosts and authHosts
+
+The conversion project template offers the GitHub and GitLab hosts listed under `integrations:` (plus `bitbucket.org`) in its repository pickers, so self-hosted GitLab and GitHub Enterprise instances work without editing the template. Add the instance to `integrations:`, configure the matching auth provider as shown above, and set `x2a.scm.authHosts` (below); hosts not named there are left out of the picker.
+
+{: .warning }
+**Breaking change (plugins 2.1.0):** `x2a.scm.authHosts` is required and has **no default**, not even for `github.com` or `gitlab.com`. Until it is set, running phases, bulk runs, the CSV bulk import and the repository picker refuse every GitHub or GitLab host with an error naming the missing key.
+
+Backstage auth providers are configured once per provider type, so the OAuth token they issue is valid for a single host. X2Ansible therefore hands a token only to the host named in `x2a.scm.authHosts`:
+
+```yaml
+x2a:
+  scm:
+    authHosts:
+      github: github.com             # or the host of auth.providers.github.<env>.enterpriseInstanceUrl
+      gitlab: gitlab.example.com     # the host of auth.providers.gitlab.<env>.audience
+```
+
+- The value is a bare host or a URL (the GitLab `audience` can be copied as is). A non-default port is part of the host (`gitlab.example.com:8443`).
+- Bitbucket Cloud is always `bitbucket.org` and needs no entry.
+- Keeping `authHosts` in sync with the auth provider configuration is up to you; the frontend cannot verify it.
+- RHDH 1.10 maps every `integrations:` host to the auth provider of its type out of the box. Newer RHDH releases do this through the `app-integrations` plugin: keep it enabled (it is by default), otherwise custom hosts get a sign-in error and no token. Other Backstage apps must register `ScmAuth.forGitlab(api, { host })` (or the GitHub equivalent) for custom hosts.
+- RHDH dynamic plugin deployments must list `X2ARepoUrlPickerExtension` in `scaffolderFieldExtensions` (see [`deploy/app.yaml`](https://github.com/x2ansible/x2ansible.github.io/blob/main/deploy/app.yaml)); otherwise the repository fields silently become plain text inputs.
+- Only one GitHub, one GitLab and one Bitbucket Cloud host can be authenticated at a time. Azure, Gerrit, Gitea and Bitbucket Server are not offered.
+
+For the full behavior and limitations see [SCM hosts and the X2ARepoUrlPicker field](https://github.com/redhat-developer/rhdh-plugins/blob/main/workspaces/x2a/docs/scm-hosts.md).
 
 ## Sign-In Resolvers
 
