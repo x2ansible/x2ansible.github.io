@@ -1,7 +1,4 @@
-# Runtime settings only. Edit application YAML and plugins in templates/.
-global:
-  x2a:
-    publicUrl: https://localhost:8443
+# Edit application YAML and plugins in templates/.
 rbac:
   serviceAccountName: default
   defaultNamespacePodList: true
@@ -25,6 +22,7 @@ rhdh:
       extraEnvVarsSecrets:
       - x2a-llm
       - x2a-aap
+      - vm-metadata
       extraEnvVars:
       - name: AUTH_GITHUB_CLIENT_ID
         valueFrom:

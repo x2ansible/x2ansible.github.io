@@ -1,0 +1,73 @@
+<div class="vm-configurator">
+  <fieldset class="config-card">
+    <legend><span class="step-number">1</span> Language model <span class="badge">Required</span></legend>
+    <p class="card-description">The model used to analyze and convert your infrastructure code.</p>
+    <div class="field-grid">
+      <label>Provider
+        <select id="llm-provider">
+          <option value="openai">OpenAI</option>
+          <option value="anthropic">Anthropic / Claude</option>
+          <option value="bedrock">Amazon Bedrock</option>
+        </select>
+      </label>
+      <label>Model ID <input id="llm-model" value="openai/" autocomplete="off" placeholder="e.g. openai/gpt-4o"></label>
+      <label id="llm-key-label">API key <input id="llm-key" type="password" autocomplete="new-password"></label>
+      <label id="llm-max-label">Max tokens <span class="field-hint">(optional)</span> <input id="llm-max" value="32000" inputmode="numeric"></label>
+      <label id="llm-region-label" hidden>AWS region <input id="llm-region" value="us-east-1" autocomplete="off"></label>
+    </div>
+    <p class="help" id="llm-docs"></p>
+  </fieldset>
+
+  <fieldset class="config-card">
+    <legend><span class="step-number">2</span> Sign-in <span class="badge">OAuth</span></legend>
+    <p class="card-description">Select one or more Git providers. Use an OAuth application's client ID and secret, not a personal access token.</p>
+    <div class="provider-choices">
+      <div class="provider-choice">
+        <label><input type="checkbox" id="github-enabled"> GitHub</label>
+        <a href="{% link latest/platform/authentication.md %}#github">GitHub setup guide &rarr;</a>
+      </div>
+      <div class="provider-choice">
+        <label><input type="checkbox" id="gitlab-enabled"> GitLab.com</label>
+        <a href="{% link latest/platform/authentication.md %}#gitlab">GitLab setup guide &rarr;</a>
+      </div>
+      <div class="provider-choice">
+        <label><input type="checkbox" id="bitbucket-enabled"> Bitbucket Cloud</label>
+        <a href="{% link latest/platform/authentication.md %}#bitbucket">Bitbucket setup guide &rarr;</a>
+      </div>
+    </div>
+    <p class="help">Register your application using the VM's public URL, <code>https://localhost:8443</code>. See <a href="{% link latest/platform/authentication.md %}#oauth-callback-errors">VM callback URLs</a>. No provider selected means no sign-in—not guest access.</p>
+    <div id="auth-fields"></div>
+  </fieldset>
+
+  <fieldset class="config-card">
+    <legend><span class="step-number">3</span> Publish to AAP <span class="badge">Optional</span></legend>
+    <details class="integration-details">
+      <summary>Connect Ansible Automation Platform</summary>
+      <p class="help">Publish converted roles to an existing automation controller. Leave blank to skip. <a href="https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/">AAP documentation &rarr;</a></p>
+      <div class="field-grid">
+        <label>Controller URL <input id="aap-url" type="url" placeholder="https://controller.example.com/"></label>
+        <label>Organization name <input id="aap-org" value="Default"></label>
+        <label class="full-width">OAuth token <input id="aap-token" type="password" autocomplete="new-password"></label>
+      </div>
+      <label class="checkbox-label"><input id="aap-verify" type="checkbox" checked> Verify controller TLS certificate</label>
+    </details>
+  </fieldset>
+
+  <section class="export-card" aria-labelledby="export-title">
+    <div class="export-header">
+      <div>
+        <h3 id="export-title">Your first-boot configuration</h3>
+        <p class="help">For local development, save as <code>vm/cloud-init/user-data</code>. For AWS evaluation, paste its contents into EC2 Advanced details → User data. Applies to a new VM only. Review the generated YAML below before using it.</p>
+      </div>
+      <div class="actions">
+        <button type="button" id="copy" disabled>Copy YAML</button>
+        <button type="button" id="download" class="primary-action" disabled>Download user-data</button>
+      </div>
+    </div>
+    <p id="vm-config-status" role="status" aria-live="polite"></p>
+    <div class="yaml-preview">
+      <label for="output">Generated YAML <span class="field-hint">— contains credentials</span></label>
+      <textarea id="output" spellcheck="false" readonly></textarea>
+    </div>
+  </section>
+</div>
