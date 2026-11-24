@@ -52,6 +52,7 @@ auth:
       development:
         clientId: ${AUTH_GITLAB_CLIENT_ID}
         clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
+        # For a self-managed instance, replace with its base URL.
         audience: https://gitlab.com
         signIn:
           resolvers:
@@ -59,10 +60,12 @@ auth:
 ```
 
 **Setup**:
-1. Create a GitLab OAuth application at [gitlab.com/-/user_settings/applications](https://gitlab.com/-/user_settings/applications)
-2. Set the redirect URI to `http://localhost:7007/api/auth/gitlab/handler/frame`
+1. Create a GitLab OAuth application on GitLab.com or your self-managed GitLab instance ([GitLab.com applications](https://gitlab.com/-/user_settings/applications))
+2. Set the redirect URI to `http://localhost:7007/api/auth/gitlab/handler/frame`, or the equivalent URL for your deployment
 3. Request scopes: `read_user`, `read_repository`, `write_repository`, `openid`, `profile`, `email`
-4. Set the Application ID and Secret as environment variables
+4. Set the Application ID and Secret as `AUTH_GITLAB_CLIENT_ID` and `AUTH_GITLAB_CLIENT_SECRET` environment variables
+
+For a self-managed GitLab instance, set `audience` to the instance's base URL. The OAuth application and its client ID and client secret are required for both GitLab.com and self-managed instances.
 
 **Required Scopes** (per [Backstage documentation](https://backstage.io/docs/auth/gitlab/provider/)):
 - `read_user`
@@ -70,19 +73,6 @@ auth:
 - `write_repository`
 - `openid`, `profile`, `email`
 - `api`, `read_api`, `write_repository`
-
-
-#### Custom GitLab instance
-
-When using a custom GitLab instance, configure the following value to point to the correct instance:
-
-```yaml
-auth:
-  providers:
-    gitlab:
-      development:
-        audience: ${GITLAB_HOST}
-```
 
 
 ### Bitbucket
