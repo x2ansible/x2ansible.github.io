@@ -1,0 +1,22 @@
+# Phase 2 — a minimal AAP instance: Gateway (auth/OAuth front-end, required) + Controller.
+# Hub, EDA, and Lightspeed are disabled to keep the footprint sane on a lab cluster — the
+# `rhaap` sign-in flow only needs the gateway's OAuth application. The operator provisions a
+# managed PostgreSQL by default.
+#
+# First login: open the gateway route, choose "use your Red Hat account" and pick any AAP
+# entitlement (e.g. the 60-day trial) to attach the subscription. No manifest .zip needed.
+apiVersion: aap.ansible.com/v1alpha1
+kind: AnsibleAutomationPlatform
+metadata:
+  name: aap
+  namespace: aap
+spec:
+  # Gateway is deployed by default and is the SSO/OAuth front-end used by RHDH `rhaap`.
+  controller:
+    disabled: false
+  eda:
+    disabled: true
+  hub:
+    disabled: true
+  lightspeed:
+    disabled: true

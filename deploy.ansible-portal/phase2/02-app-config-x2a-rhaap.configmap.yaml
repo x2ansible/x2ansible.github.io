@@ -1,0 +1,80 @@
+# Phase-2 app-config overlay for X2A (customAppConfigRef), identical to the Phase-1
+# manifests/03-app-config-x2a.configmap.yaml EXCEPT the Phase-1 sign-in override is
+# removed. With a real AAP behind the Portal, we let the operator's default
+# `auth.signInPage: rhaap` stand and drop the github `signIn.resolvers` deep-merge.
+# The `auth` block now carries only Dynamic Client Registration (still needed for
+# backstage-plugin-auth /oauth2 + MCP). Everything else is unchanged.
+#
+# Applying this REPLACES the live `app-config-x2a` ConfigMap. Restart the Backstage
+# pod afterward (the mounted file is not hot-reloaded).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-x2a
+  namespace: automation-portal
+data:
+  app-config-x2a.yaml: |
+    auth:
+      # Phase 2: native rhaap sign-in (operator default). No signInPage override,
+      # no github resolver — the AAP gateway OAuth application handles sign-in.
+      # Dynamic Client Registration (consumed by backstage-plugin-auth /oauth2 + MCP)
+      experimentalDynamicClientRegistration:
+        enabled: true
+        allowedRedirectUriPatterns:
+          - cursor://*
+          - https://*
+          - http://*
+    backend:
+      actions:
+        pluginSources:
+          - 'x2a-mcp-extras'
+    # Keep MCP tool names within [A-Za-z0-9_-]; avoids the "x2a-mcp-extras.x2a-..." dotted names
+    mcpActions:
+      namespacedToolNames: false
+    dynamicPlugins:
+      frontend:
+        backstage.plugin-auth:
+          dynamicRoutes:
+            - path: /oauth2/*
+              importName: Router
+        red-hat-developer-hub.backstage-plugin-x2a:
+          scaffolderFieldExtensions:
+            - importName: RepoAuthenticationExtension
+            - importName: RulesAcceptanceExtension
+          translationResources:
+            - importName: x2aPluginTranslations
+              ref: x2aPluginTranslationRef
+          appIcons:
+            - name: x2aIcon
+              importName: X2AIcon
+          dynamicRoutes:
+            - path: /x2a
+              importName: X2APage
+              menuItem:
+                text: Conversion Hub
+                icon: x2aIcon
+    x2a:
+      callbackBaseUrl: http://${SERVICE_NAME}.${NAMESPACE}.svc.cluster.local/api/x2a
+      kubernetes:
+        image: ${X2A_KUBERNETES_IMAGE:-quay.io/x2ansible/x2a-convertor}
+        imageTag: ${X2A_KUBERNETES_IMAGE_TAG:-latest}
+        ttlSecondsAfterFinished: 86400
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+      credentials:
+        llm:
+          LLM_MODEL: ${LLM_MODEL:-anthropic.claude-v2}
+          AWS_REGION: ${AWS_REGION:-}
+          AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK:-}
+          SUMMARY_CONTEXT_SIZE: ${SUMMARY_CONTEXT_SIZE:-}
+          MAX_TOKENS: ${MAX_TOKENS:-}
+        aap:
+          url: ${AAP_URL:-https://aap.example.com}
+          orgName: ${AAP_ORG_NAME:-MyOrganization}
+          oauthToken: ${AAP_OAUTH_TOKEN:-your-oauth-token}
+          skipSSLVerification: ${AAP_SKIP_SSL_VERIFICATION:-false}

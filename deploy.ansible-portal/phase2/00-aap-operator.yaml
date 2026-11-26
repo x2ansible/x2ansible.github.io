@@ -1,0 +1,29 @@
+# Phase 2 — install the Ansible Automation Platform operator (namespace-scoped in `aap`).
+# Channel stable-2.7 from the redhat-operators catalog. This is the prerequisite for a
+# real AAP behind the Portal's native `rhaap` sign-in (replaces the Phase-1 GitHub override).
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/install-assembly_installing_aap_operator_cli
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aap
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: aap-operatorgroup
+  namespace: aap
+spec:
+  targetNamespaces:
+    - aap
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ansible-automation-platform-operator
+  namespace: aap
+spec:
+  channel: stable-2.7
+  name: ansible-automation-platform-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  installPlanApproval: Automatic

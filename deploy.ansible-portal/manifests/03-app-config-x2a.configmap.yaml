@@ -1,0 +1,99 @@
+# App-config overlay for X2A, referenced by AutomationPortal
+# spec.plugins.customAppConfigRef. Layered on top of the operator-generated
+# portal-app-config (this file is loaded LAST, so scalar keys here win and
+# object keys deep-merge). Safe to add object-merge keys; do NOT restate
+# arrays the operator manages (catalog.locations, backend.cors) — arrays replace.
+#
+# PHASE-1 SIGN-IN OVERRIDE (deliberate): the operator hardwires
+# `auth.signInPage: rhaap`, whose sign-in page calls the AAP gateway. In Phase 1
+# there is no reachable AAP (placeholder secret), so we override the sign-in PAGE
+# to `github` and attach a github signIn resolver. Because this file loads after
+# portal-app-config.yaml, `auth.signInPage: github` overrides `rhaap` and the
+# `signIn.resolvers` block deep-merges into the operator's github provider
+# (its clientId/clientSecret env refs are preserved). In Phase 2 (real AAP +
+# native rhaap sign-in) drop this override.
+#
+# Lab-only auth: dangerouslyAllowSignInWithoutUserInCatalog + broad DCR redirect patterns —
+# see README "Phase-1 auth settings (lab / evaluation only)" before production use.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-x2a
+  namespace: automation-portal
+data:
+  app-config-x2a.yaml: |
+    auth:
+      # Phase-1 override: use GitHub as the sign-in page (operator default is rhaap,
+      # which needs a reachable AAP gateway we do not have in Phase 1).
+      signInPage: github
+      providers:
+        github:
+          production:
+            # clientId/clientSecret are supplied by the operator from
+            # spec.auth.providers.github.credentials (env GITHUB_OAUTH_CLIENT_ID/SECRET);
+            # this block only ADDS the sign-in resolver via deep-merge.
+            signIn:
+              resolvers:
+                - resolver: usernameMatchingUserEntityName
+                  dangerouslyAllowSignInWithoutUserInCatalog: true
+      # Dynamic Client Registration (consumed by backstage-plugin-auth /oauth2 + MCP)
+      experimentalDynamicClientRegistration:
+        enabled: true
+        allowedRedirectUriPatterns:
+          - cursor://*
+          - https://*
+          - http://*
+    backend:
+      actions:
+        pluginSources:
+          - 'x2a-mcp-extras'
+    # Keep MCP tool names within [A-Za-z0-9_-]; avoids the "x2a-mcp-extras.x2a-..." dotted names
+    mcpActions:
+      namespacedToolNames: false
+    dynamicPlugins:
+      frontend:
+        backstage.plugin-auth:
+          dynamicRoutes:
+            - path: /oauth2/*
+              importName: Router
+        red-hat-developer-hub.backstage-plugin-x2a:
+          scaffolderFieldExtensions:
+            - importName: RepoAuthenticationExtension
+            - importName: RulesAcceptanceExtension
+          translationResources:
+            - importName: x2aPluginTranslations
+              ref: x2aPluginTranslationRef
+          appIcons:
+            - name: x2aIcon
+              importName: X2AIcon
+          dynamicRoutes:
+            - path: /x2a
+              importName: X2APage
+              menuItem:
+                text: Conversion Hub
+                icon: x2aIcon
+    x2a:
+      callbackBaseUrl: http://${SERVICE_NAME}.${NAMESPACE}.svc.cluster.local/api/x2a
+      kubernetes:
+        image: ${X2A_KUBERNETES_IMAGE:-quay.io/x2ansible/x2a-convertor}
+        imageTag: ${X2A_KUBERNETES_IMAGE_TAG:-latest}
+        ttlSecondsAfterFinished: 86400
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+      credentials:
+        llm:
+          LLM_MODEL: ${LLM_MODEL:-anthropic.claude-v2}
+          AWS_REGION: ${AWS_REGION:-}
+          AWS_BEARER_TOKEN_BEDROCK: ${AWS_BEARER_TOKEN_BEDROCK:-}
+          SUMMARY_CONTEXT_SIZE: ${SUMMARY_CONTEXT_SIZE:-}
+          MAX_TOKENS: ${MAX_TOKENS:-}
+        aap:
+          url: ${AAP_URL:-https://aap.example.com}
+          orgName: ${AAP_ORG_NAME:-MyOrganization}
+          oauthToken: ${AAP_OAUTH_TOKEN:-your-oauth-token}
+          skipSSLVerification: ${AAP_SKIP_SSL_VERIFICATION:-false}
